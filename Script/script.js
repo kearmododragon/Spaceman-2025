@@ -140,24 +140,32 @@ const wordList = [
 ];
 const themeList=["space", "western", "nature", "ocean", "zoo"]
 
-
+//global setup
 const categorySelect = document.getElementById("category-select")
 const difficultySelect = document.getElementById("difficulty-select")
 const themeSelect = document.getElementById("theme-select")
-const categories = [...new Set(wordList.map(word => word.category))];
-const difficulty = [...new Set(wordList.map(word => word.difficulty))];
+
+const lettersEl = document.getElementById("letters")
+const startBtn = document.getElementById("start-btn")
+const resetBtn = document.getElementById("reset-btn")
+const gameBoard = document.getElementById("game-board")
+const startScreen = document.getElementById("start-screen")
+const endGame = document.getElementById("end-game")
+
+let gameOver = false
+let lives = 7
+
+let currentWordObj = null
+let currentWord = ""
+let maskedWord = []
+let guessedLetters = []
+
+// Derived Data
+const categories = [...new Set(wordList.map(word => word.category))]
+const difficulties = [...new Set(wordList.map(word => word.difficulty))]
 const themes = [...new Set(themeList)]
 
 
-let lettersEl = document.getElementById("letters")
-let startBtn = document.getElementById("start-btn")
-let resetBtn = document.getElementById("reset-btn")
-let gameBoard = document.getElementById("game-board")
-let startScreen = document.getElementById("start-screen")
-let endGame = document.getElementById("end-game")
-let gameInterval;
-let gameOver = false
-let lives = 7
 
 categories.forEach(category => {
   const option = document.createElement("option");
@@ -165,7 +173,7 @@ categories.forEach(category => {
   option.textContent = category;
   categorySelect.appendChild(option);
 })
-difficulty.forEach(difficulty => {
+difficulties.forEach(difficulty => {
   const option = document.createElement("option");
   option.value = difficulty;
   option.textContent = difficulty;
@@ -178,18 +186,43 @@ themes.forEach(theme => {
     themeSelect.appendChild(option)
   })
 //functions
-
-//event listeners
-document.getElementById("start-btn").addEventListener("click", (e) =>{
-  console.log("start game")
+function startGame() {
+console.log("start game function")
+//change UI state
   startScreen.classList.add("hidden")
   gameBoard.classList.remove("hidden")
+  // read user selection
+  let selectedCategory = categorySelect.value
+  let selectedDifficulty = difficultySelect.value
+
+  if (selectedCategory === "random") {
+    const randomIndex = Math.floor(Math.random() * categories.length);
+    selectedCategory = categories[randomIndex]
+  }
+  if (selectedDifficulty === "random") {
+    const randomIndex = Math.floor(Math.random() * difficulties.length);
+    selectedDifficulty = difficulties[randomIndex]
+  }
+  // filtered words
+  const filteredWords = wordList.filter(wordObj => 
+  wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
+)
+const randomIndex = Math.floor(Math.random() * filteredWords.length)
+currentWordObj = filteredWords[randomIndex]
+currentWord = currentWordObj.word.toUpperCase()
+maskedWord = currentWord.split("").map(() => " _ ")
+document.getElementById("masked-word").textContent = maskedWord.join (" ")
+console.log(selectedCategory, selectedDifficulty, filteredWords, currentWordObj, currentWord, maskedWord)
+}
+//event listeners
+document.getElementById("start-btn").addEventListener("click", (e) =>{
+  startGame()
 })
 
 document.getElementById("letters").addEventListener("click", (e) => {
   if (e.target.tagName === "BUTTON"){
       console.log("letter clicked", e.target.id);
   e.target.classList.add("hidden");
-  e.target.disable = true
+  e.target.disabled = true
   }
 })

@@ -19,3 +19,12 @@ Ice box
 - 2 player (pick your own word) 
 - timer
 - music
+
+const themeList=["space", "western", "nature", "ocean", "zoo"]
+
+
+Space - letters are stars? Spaceman on the moon for design
+western - letters are wanted posters. They get "shot" , classic stickman hangman
+nature - petals on flower are lives/hangman, cutesy
+ocean - fish are lives, underwater
+zoo - animals are the lives 
