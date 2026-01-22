@@ -1,3 +1,36 @@
+/* Game logic
+Initialize game state   [DONE]
+  select word and clue
+  set lives             {DONE}
+  create masked word display
+  enable letter input
+
+On letter input
+  if game is over, ignore input
+  if letter already guessed, ignore input
+  mark letter as guessed
+  if letter exists in word
+    reveal all matching positions
+  else
+    decrease lives
+  check win condition
+  check loss condition
+
+If win
+  display success message
+  disable input
+
+If loss
+  display game over message
+  disable input
+
+On restart
+  reset all state
+  start new game
+
+
+*/
+
 const wordList = [
   // FOOD (20)
   { category: "food", difficulty: "easy", Clue: "Red fruit", word: "apple" },
@@ -105,3 +138,58 @@ const wordList = [
   { category: "animals", difficulty: "hard", Clue: "Deep sea shark", word: "goblinshark" },
   { category: "animals", difficulty: "hard", Clue: "Ancient fish", word: "coelacanth" }
 ];
+const themeList=["space", "western", "nature", "ocean", "zoo"]
+
+
+const categorySelect = document.getElementById("category-select")
+const difficultySelect = document.getElementById("difficulty-select")
+const themeSelect = document.getElementById("theme-select")
+const categories = [...new Set(wordList.map(word => word.category))];
+const difficulty = [...new Set(wordList.map(word => word.difficulty))];
+const themes = [...new Set(themeList)]
+
+
+let lettersEl = document.getElementById("letters")
+let startBtn = document.getElementById("start-btn")
+let resetBtn = document.getElementById("reset-btn")
+let gameBoard = document.getElementById("game-board")
+let startScreen = document.getElementById("start-screen")
+let endGame = document.getElementById("end-game")
+let gameInterval;
+let gameOver = false
+let lives = 7
+
+categories.forEach(category => {
+  const option = document.createElement("option");
+  option.value = category;
+  option.textContent = category;
+  categorySelect.appendChild(option);
+})
+difficulty.forEach(difficulty => {
+  const option = document.createElement("option");
+  option.value = difficulty;
+  option.textContent = difficulty;
+  difficultySelect.appendChild(option);
+})
+themes.forEach(theme => {
+  const option = document.createElement("option")
+    option.value = theme.toLowerCase();
+    option.textContent = theme
+    themeSelect.appendChild(option)
+  })
+//functions
+
+//event listeners
+document.getElementById("start-btn").addEventListener("click", (e) =>{
+  console.log("start game")
+  startScreen.classList.add("hidden")
+  gameBoard.classList.remove("hidden")
+})
+
+document.getElementById("letters").addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON"){
+      console.log("letter clicked", e.target.id);
+  e.target.classList.add("hidden");
+  e.target.disable = true
+  }
+})
