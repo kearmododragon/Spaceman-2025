@@ -138,7 +138,7 @@ const wordList = [
   { category: "animals", difficulty: "hard", Clue: "Deep sea shark", word: "goblinshark" },
   { category: "animals", difficulty: "hard", Clue: "Ancient fish", word: "coelacanth" }
 ];
-const themeList=["space", "western", "nature", "ocean", "zoo"]
+const themeList = ["space", "western", "nature", "ocean", "zoo"]
 
 //global setup
 const categorySelect = document.getElementById("category-select")
@@ -181,14 +181,19 @@ difficulties.forEach(difficulty => {
 })
 themes.forEach(theme => {
   const option = document.createElement("option")
-    option.value = theme.toLowerCase();
-    option.textContent = theme
-    themeSelect.appendChild(option)
-  })
+  option.value = theme.toLowerCase();
+  option.textContent = theme
+  themeSelect.appendChild(option)
+})
 //functions
 function startGame() {
-console.log("start game function")
-//change UI state
+  console.log("start game function")
+  //reset old data
+  gameOver = false
+  lives = 7
+  guessedLetters = []
+  maskedWord = []
+  //change UI state
   startScreen.classList.add("hidden")
   gameBoard.classList.remove("hidden")
   // read user selection
@@ -204,25 +209,32 @@ console.log("start game function")
     selectedDifficulty = difficulties[randomIndex]
   }
   // filtered words
-  const filteredWords = wordList.filter(wordObj => 
-  wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
-)
-const randomIndex = Math.floor(Math.random() * filteredWords.length)
-currentWordObj = filteredWords[randomIndex]
-currentWord = currentWordObj.word.toUpperCase()
-maskedWord = currentWord.split("").map(() => " _ ")
-document.getElementById("masked-word").textContent = maskedWord.join (" ")
-console.log(selectedCategory, selectedDifficulty, filteredWords, currentWordObj, currentWord, maskedWord)
+  const filteredWords = wordList.filter(wordObj =>
+    wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
+  )
+    if (filteredWords.length === 0) {
+    console.error("No words found")
+    return
+  }
+  const randomIndex = Math.floor(Math.random() * filteredWords.length)
+  currentWordObj = filteredWords[randomIndex]
+  currentWord = currentWordObj.word.toUpperCase()
+  maskedWord = currentWord.split("").map(() => "_")
+  document.getElementById("masked-word").textContent = maskedWord.join(" ")
+  console.log(selectedCategory, selectedDifficulty, filteredWords, currentWordObj, currentWord, maskedWord)
+}
+function gameOver() {
+  console.log("game over")
 }
 //event listeners
-document.getElementById("start-btn").addEventListener("click", (e) =>{
+document.getElementById("start-btn").addEventListener("click", (e) => {
   startGame()
 })
 
 document.getElementById("letters").addEventListener("click", (e) => {
-  if (e.target.tagName === "BUTTON"){
-      console.log("letter clicked", e.target.id);
-  e.target.classList.add("hidden");
-  e.target.disabled = true
+  if (e.target.tagName === "BUTTON") {
+    console.log("letter clicked", e.target.id);
+    e.target.classList.add("hidden");
+    e.target.disabled = true
   }
 })
