@@ -126,7 +126,7 @@ const wordList = [
   { category: "characters", difficulty: "hard", clue: "pokemon professor", word: "oak" },
   { category: "characters", difficulty: "hard", clue: "animated horse", word: "bojack" }
 ];
-const themeList = ["space", "western", "nature", "ocean", "zoo"];
+const themeList = ["space", "western", "nature", "invaders",];
 // DOM Elements
 const categorySelect = document.getElementById("category-select");
 const difficultySelect = document.getElementById("difficulty-select");
