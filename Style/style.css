@@ -2,21 +2,25 @@ body {
     background-color: black;
     color: whitesmoke;
 }
+#letters {
+    display: grid;
+    grid-template-columns: repeat(7, 50px);
+    gap: 10px;
+    justify-content: center; 
+}
 button {
-    margin: auto;
-    padding: 10px 20px;
-    border: none;
+    padding: 10px;
     border-radius: 20px;
     background-color: red;
     color: azure;
     font-weight: bold;
     cursor: pointer;
 }
+
 button:disabled {
     cursor: not-allowed;
 }
 .hidden{
-    visibility: hidden;
     display: none;
     pointer-events: none;
 }
