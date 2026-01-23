@@ -1,3 +1,4 @@
+// Word & Theme Data
 const wordList = [
   // FOOD (20)
   { category: "food", difficulty: "easy", clue: "Red fruit", word: "apple" },
@@ -124,168 +125,183 @@ const wordList = [
   { category: "characters", difficulty: "hard", clue: "office accountant", word: "kevin" },
   { category: "characters", difficulty: "hard", clue: "pokemon professor", word: "oak" },
   { category: "characters", difficulty: "hard", clue: "animated horse", word: "bojack" }
-
 ];
-const themeList = ["space", "western", "nature", "ocean", "zoo"]
+const themeList = ["space", "western", "nature", "ocean", "zoo"];
+// DOM Elements
+const categorySelect = document.getElementById("category-select");
+const difficultySelect = document.getElementById("difficulty-select");
+const themeSelect = document.getElementById("theme-select");
 
-//global setup
-const categorySelect = document.getElementById("category-select")
-const difficultySelect = document.getElementById("difficulty-select")
-const themeSelect = document.getElementById("theme-select")
+const lettersEl = document.getElementById("letters");
+const startBtn = document.getElementById("start-btn");
+const resetBtn = document.getElementById("reset-btn");
+const gameBoard = document.getElementById("game-board");
+const startScreen = document.getElementById("start-screen");
+const endGame = document.getElementById("end-game");
+const endGameMessageEl = document.getElementById("endGameMessage");
+const wordRevealEl = document.getElementById("wordReveal");
+const clueTextEl = document.getElementById("clue-text");
+const livesTextEl = document.getElementById("lives-remaining");
+const wordDisplayEl = document.getElementById("masked-word");
+// Game Config
+const clueRevealLives = 2;
 
-const lettersEl = document.getElementById("letters")
-const startBtn = document.getElementById("start-btn")
-const resetBtn = document.getElementById("reset-btn")
-const gameBoard = document.getElementById("game-board")
-const startScreen = document.getElementById("start-screen")
-const endGame = document.getElementById("end-game")
-const endGameMessageEl = document.getElementById("endGameMessage")
-const wordRevealEl = document.getElementById("wordReveal")
-const clueTextEl = document.getElementById("clue-text")
-const livesTextEl = document.getElementById("lives-remaining")
-const wordDisplayEl = document.getElementById("masked-word")
+let gameOver = false;
+let lives = 7;
 
-const clueRevealLives = 2
-
-let gameOver = false
-let lives = 7
-
-
-let currentWordObj = null
-let currentWord = ""
-let maskedWord = []
-let guessedLetters = []
-
+let currentWordObj = null;
+let currentWord = "";
+let maskedWord = [];
+let guessedLetters = [];
 // Derived Data
-const categories = [...new Set(wordList.map(word => word.category))]
-const difficulties = [...new Set(wordList.map(word => word.difficulty))]
-const themes = [...new Set(themeList)]
+const categories = [...new Set(wordList.map(word => word.category))];
+const difficulties = [...new Set(wordList.map(word => word.difficulty))];
+const themes = [...new Set(themeList)];
+// Initialize Select Options
+function populateSelectOptions() {
+  categories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categorySelect.appendChild(option);
+  });
 
+  difficulties.forEach(difficulty => {
+    const option = document.createElement("option");
+    option.value = difficulty;
+    option.textContent = difficulty;
+    difficultySelect.appendChild(option);
+  });
 
+  themes.forEach(theme => {
+    const option = document.createElement("option");
+    option.value = theme.toLowerCase();
+    option.textContent = theme;
+    themeSelect.appendChild(option);
+  });
+}
 
-categories.forEach(category => {
-  const option = document.createElement("option");
-  option.value = category;
-  option.textContent = category;
-  categorySelect.appendChild(option);
-})
-difficulties.forEach(difficulty => {
-  const option = document.createElement("option");
-  option.value = difficulty;
-  option.textContent = difficulty;
-  difficultySelect.appendChild(option);
-})
-themes.forEach(theme => {
-  const option = document.createElement("option")
-  option.value = theme.toLowerCase();
-  option.textContent = theme
-  themeSelect.appendChild(option)
-})
-//functions
+populateSelectOptions();
+// Game Functions
 function startGame() {
-  //reset old data
-  gameOver = false
-  lives = 7
-  guessedLetters = []
-  maskedWord = []
-  //rest letter buttons 
+  // Reset old data
+  gameOver = false;
+  lives = 7;
+  guessedLetters = [];
+  maskedWord = [];
+
+  // Reset letter buttons
   const letterButtons = lettersEl.querySelectorAll("button");
   letterButtons.forEach(btn => {
     btn.disabled = false;
-    btn.classList.remove("hidden")
-  })
-  //update displays
+    btn.classList.remove("hidden");
+  });
+
+  // Update displays
   updateLivesDisplay();
-  updateclue();
-  //change UI state
-  startScreen.classList.add("hidden")
-  gameBoard.classList.remove("hidden")
-  // read user selection
-  let selectedCategory = categorySelect.value
-  let selectedDifficulty = difficultySelect.value
+  updateClue();
+
+  // Change UI state
+  startScreen.classList.add("hidden");
+  gameBoard.classList.remove("hidden");
+
+  // Read user selection
+  let selectedCategory = categorySelect.value;
+  let selectedDifficulty = difficultySelect.value;
 
   if (selectedCategory === "random") {
-    const randomIndex = Math.floor(Math.random() * categories.length);
-    selectedCategory = categories[randomIndex]
+    selectedCategory = categories[Math.floor(Math.random() * categories.length)];
   }
   if (selectedDifficulty === "random") {
-    const randomIndex = Math.floor(Math.random() * difficulties.length);
-    selectedDifficulty = difficulties[randomIndex]
-  }
-  // filtered words
-  const filteredWords = wordList.filter(wordObj =>
-    wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
-  )
-  if (filteredWords.length === 0) {
-    return
-  }
-  const randomIndex = Math.floor(Math.random() * filteredWords.length)
-  currentWordObj = filteredWords[randomIndex]
-  currentWord = currentWordObj.word.toUpperCase()
-  maskedWord = currentWord.split("").map(() => "_")
-  document.getElementById("masked-word").textContent = maskedWord.join(" ")
-  updateclue()
-  updateLivesDisplay()
-}
-function updateclue() {
-  const livesUntilReveal = lives - clueRevealLives
-  if (lives > clueRevealLives) {
-    clueTextEl.textContent = `Lives left for reveal ${livesUntilReveal}`
-  } else {
-    clueTextEl.textContent = currentWordObj.clue
-  }
-}
-function letterCheck(letter) {
-  let foundMatch = false
-  for (let i = 0; i < currentWordObj.word.length; i++) {
-    if (currentWord[i] === letter) {
-      maskedWord[i] = letter
-      foundMatch = true
-    }
-  }
-  if (!foundMatch) {
-    lives--
-    updateLivesDisplay()
-    updateclue()
-  }
-  updateMaskedWordDisplay()
-  checkWinCondition()
-}
-function updateMaskedWordDisplay() {
-  wordDisplayEl.textContent = maskedWord.join(" ")
-}
-function updateLivesDisplay() {
-  livesTextEl.textContent = `${lives}`
-}
-function checkWinCondition() {
-  const wordGuessed = !maskedWord.includes("_")
-  if (lives <= 0) {
-    gameOver = true
-    endGameMessageEl.textContent = "Game Over!"
-    wordRevealEl.textContent = `The word was ${currentWord}`
-    gameBoard.classList.add("hidden")
-    endGame.classList.remove("hidden")
-  } else if (wordGuessed) {
-    gameOver = true
-    endGameMessageEl.textContent = "Well done my guy!"
-    wordRevealEl.textContent = `The word was ${currentWord}`
-    gameBoard.classList.add("hidden")
-    endGame.classList.remove("hidden")
+    selectedDifficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
   }
 
+  // Filter words
+  const filteredWords = wordList.filter(
+    wordObj => wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
+  );
+
+  if (filteredWords.length === 0) return;
+
+  const randomIndex = Math.floor(Math.random() * filteredWords.length);
+  currentWordObj = filteredWords[randomIndex];
+  currentWord = currentWordObj.word.toUpperCase();
+  maskedWord = currentWord.split("").map(() => "_");
+
+  updateMaskedWordDisplay();
+  updateClue();
+  updateLivesDisplay();
 }
-//event listeners
-document.getElementById("start-btn").addEventListener("click", () => {
-  startGame()
-})
-document.getElementById("letters").addEventListener("click", (e) => {
-  if (e.target.tagName !== "BUTTON") return
-  const letter = e.target.id
-  e.target.classList.add("hidden")
-  e.target.disabled = true
-  letterCheck(letter)
-})
-document.getElementById("reset-btn").addEventListener("click", () => {
-  startScreen.classList.remove("hidden")
-  endGame.classList.add("hidden")
-})
+
+function updateClue() {
+  const livesUntilReveal = lives - clueRevealLives;
+  if (lives > clueRevealLives) {
+    clueTextEl.textContent = `Lives left for reveal: ${livesUntilReveal}`;
+  } else {
+    clueTextEl.textContent = currentWordObj.clue;
+  }
+}
+
+function letterCheck(letter) {
+  if (gameOver) return;
+
+  let foundMatch = false;
+
+  for (let i = 0; i < currentWord.length; i++) {
+    if (currentWord[i] === letter) {
+      maskedWord[i] = letter;
+      foundMatch = true;
+    }
+  }
+
+  if (!foundMatch) {
+    lives--;
+    updateLivesDisplay();
+    updateClue();
+  }
+
+  updateMaskedWordDisplay();
+  checkWinCondition();
+}
+
+function updateMaskedWordDisplay() {
+  wordDisplayEl.textContent = maskedWord.join(" ");
+}
+
+function updateLivesDisplay() {
+  livesTextEl.textContent = `${lives}`;
+}
+
+function checkWinCondition() {
+  const wordGuessed = !maskedWord.includes("_");
+
+  if (lives <= 0) {
+    gameOver = true;
+    endGameMessageEl.textContent = "Game Over!";
+    wordRevealEl.textContent = `The word was: ${currentWord}`;
+    gameBoard.classList.add("hidden");
+    endGame.classList.remove("hidden");
+  } else if (wordGuessed) {
+    gameOver = true;
+    endGameMessageEl.textContent = "Well done my guy!";
+    wordRevealEl.textContent = `The word was: ${currentWord}`;
+    gameBoard.classList.add("hidden");
+    endGame.classList.remove("hidden");
+  }
+}
+// Event Listeners
+startBtn.addEventListener("click", startGame);
+
+lettersEl.addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+
+  const letter = e.target.id;
+  e.target.classList.add("hidden");
+  e.target.disabled = true;
+  letterCheck(letter);
+});
+
+resetBtn.addEventListener("click", () => {
+  startScreen.classList.remove("hidden");
+  endGame.classList.add("hidden");
+});
