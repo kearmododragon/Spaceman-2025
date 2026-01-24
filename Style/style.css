@@ -26,7 +26,7 @@ body {
 #start-pencil {
     position: absolute; /*removes from normal layout */
     right: 5%;  /*pushes slightly from the right edge */
-    top: 50%;   /*alings it's "top" into the middle*/
+    top: 65%;   /*alings it's "top" into the middle*/
     transform: translateY(-50%);    /*pulls it up by half it's height (centered now)*/
     height: 300px;  /*how many pixels tall */
     pointer-events: none; /*clicks can pass through if needed*/
