@@ -184,7 +184,7 @@ function populateSelectOptions() {
 populateSelectOptions();
 // Game Functions
 function startGame() {
-  // Reset old data
+  // Reset game state
   gameOver = false;
   lives = 7;
   guessedLetters = [];
@@ -197,52 +197,55 @@ function startGame() {
     btn.classList.remove("hidden");
   });
 
-  // Update displays
+  // Reset displays
   updateLivesDisplay();
   updateClue();
-  startScreen.style.display = "none";
-  // Apply theme
-  const selectedTheme = themeSelect.value; // e.g., "space", "western", etc.
 
-  // Remove any previous theme class
-  gameBoard.classList.remove(...themeList);
+  // Hide start screen and remove old theme 
+  startScreen.classList.add("hidden");         
+  gameBoard.classList.remove("hidden");        
+  gameBoard.classList.remove(...themeList);    
 
-  // Add the selected theme class
-  if (selectedTheme && selectedTheme !== "random") {
-    gameBoard.classList.add(selectedTheme);
-  }
-
-
-  // Change UI state
-  startScreen.classList.add("hidden");
-  gameBoard.classList.remove("hidden");
-
-  // Read user selection
+  // Read user selections 
   let selectedCategory = categorySelect.value;
   let selectedDifficulty = difficultySelect.value;
+  let selectedTheme = themeSelect.value;
 
+  // Handle random selections
   if (selectedCategory === "random") {
     selectedCategory = categories[Math.floor(Math.random() * categories.length)];
   }
   if (selectedDifficulty === "random") {
     selectedDifficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
   }
+  if (selectedTheme === "random") {
+    selectedTheme = themes[Math.floor(Math.random() * themes.length)];
+  }
 
-  // Filter words
+  // Apply theme class to game board
+  if (selectedTheme) {
+    gameBoard.classList.add(selectedTheme);
+  }
+
+  // Filter words based on selections
   const filteredWords = wordList.filter(
     wordObj => wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
   );
 
   if (filteredWords.length === 0) return;
 
+  // Pick a random word
   const randomIndex = Math.floor(Math.random() * filteredWords.length);
   currentWordObj = filteredWords[randomIndex];
   currentWord = currentWordObj.word.toUpperCase();
   maskedWord = currentWord.split("").map(() => "_");
 
+  // Update displays
   updateMaskedWordDisplay();
   updateClue();
   updateLivesDisplay();
+
+  console.log("Selected Theme:", selectedTheme);
 }
 
 function updateClue() {
@@ -301,6 +304,14 @@ function checkWinCondition() {
     endGame.classList.remove("hidden");
   }
 }
+
+function resetGameUI() {
+  startScreen.classList.remove("hidden");
+  gameBoard.classList.add("hidden");
+  endGame.classList.add("hidden");
+  gameBoard.classList.remove(...themes);
+}
+
 // Event Listeners
 startBtn.addEventListener("click", startGame);
 
@@ -313,7 +324,4 @@ lettersEl.addEventListener("click", e => {
   letterCheck(letter);
 });
 
-resetBtn.addEventListener("click", () => {
-  startScreen.classList.remove("hidden");
-  endGame.classList.add("hidden");
-});
+resetBtn.addEventListener("click", resetGameUI);

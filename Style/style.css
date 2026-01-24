@@ -12,7 +12,7 @@ body {
     height: 100%;
 }
 
-#start-screen {
+.full-screen-layout {
     min-height: 100vh;
     background-image: url("../imgs/start/background.avif");
     background-size: cover;
@@ -46,7 +46,7 @@ body {
     /* ratation pivot from the nib*/
 }
 
-#title {
+#title, #endGameMessage, #wordReveal {
     font-family: "Rockybilly", cursive;
     font-size: 4rem;
     text-align: center;
@@ -86,7 +86,7 @@ body {
     box-shadow: 3px 3px 0px #333;
 }
 
-#start-btn {
+#start-btn, #reset-btn {
     font-family: "Rockybilly", cursive;
     font-size: 1.5rem;
     padding: 10px 20px;
@@ -166,7 +166,7 @@ button:disabled {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
     pointer-events: none;
 }
 
