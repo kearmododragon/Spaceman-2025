@@ -200,6 +200,18 @@ function startGame() {
   // Update displays
   updateLivesDisplay();
   updateClue();
+  startScreen.style.display = "none";
+  // Apply theme
+  const selectedTheme = themeSelect.value; // e.g., "space", "western", etc.
+
+  // Remove any previous theme class
+  gameBoard.classList.remove(...themeList);
+
+  // Add the selected theme class
+  if (selectedTheme && selectedTheme !== "random") {
+    gameBoard.classList.add(selectedTheme);
+  }
+
 
   // Change UI state
   startScreen.classList.add("hidden");

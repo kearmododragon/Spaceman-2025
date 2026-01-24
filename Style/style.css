@@ -1,13 +1,111 @@
-body {
-    background-color: black;
-    color: whitesmoke;
+@font-face { /*Add this always on top to import saved font*/
+    font-family: "Rockybilly";
+    src: url(../fonts/start-screen/Rockybilly.woff2) format("woff2"); 
+    font-weight: normal;
+    font-style: normal;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#start-screen {
+    min-height: 100vh;
+    background-image: url("../imgs/start/background.avif");
+    background-size: cover;
+    background-position: center;
+    
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#start-pencil {
+    position: absolute; /*removes from normal layout */
+    right: 5%;  /*pushes slightly from the right edge */
+    top: 50%;   /*alings it's "top" into the middle*/
+    transform: translateY(-50%);    /*pulls it up by half it's height (centered now)*/
+    height: 300px;  /*how many pixels tall */
+    pointer-events: none; /*clicks can pass through if needed*/
+
+    animation: pencilWobble 2.5s ease-in-out infinite; /*triggers keyframe, smooth slow loop*/
+    transform-origin: bottom left; /* ratation pivot from the nib*/
+}
+#title {
+    font-family: "Rockybilly", cursive;
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 0;
+}
+#dropdown-container {
+    display: flex; /*align dropdowns horizontally*/
+    justify-content: center; /*center on screen*/
+    gap: 15px; /*add a space between the options*/
+    margin-top: 20px; /*space between options and title*/
+}
+#dropdown-container select {
+    font-family: "Rockybilly", cursive; 
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    border: 2px solid #333;      /* Dark outline*/
+    border-radius: 5px;
+    background-color: #fff9e6;   /* Paper color */
+    box-shadow: 2px 2px 0px #333; /* Slight 3D effect */
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#dropdown-container select:hover {
+    transform: translateY(-2px); /* Lift up on hover */
+    box-shadow: 3px 3px 0px #333;
+}
+#start-btn {
+    font-family: "Rockybilly", cursive;
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background-color: #fff9e6;
+    box-shadow: 3px 3px 0px #333;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: red;
+}
+
+#start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0px #333;
+}
+
+
 #letters {
     display: grid;
     grid-template-columns: repeat(7, 50px);
     gap: 10px;
-    justify-content: center; 
+    justify-content: center;
 }
+/* Themes */
+#game-board.space {
+    background-color: #1a1a40; 
+}
+
+#game-board.western {
+    background-color: #f4e2c0; 
+}
+
+#game-board.nature {
+    background-color: #c3f0c3; 
+}
+
+#game-board.invaders {
+    background-color: #000000;
+}
+
 button {
     padding: 10px;
     border-radius: 20px;
@@ -20,7 +118,26 @@ button {
 button:disabled {
     cursor: not-allowed;
 }
-.hidden{
+
+.hidden {
     display: none;
     pointer-events: none;
+}
+
+@keyframes pencilWobble {
+    0% {
+        transform: translateY(-50%) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-52%) rotate(-2deg);
+    }
+    50% {
+        transform: translateY(-50%) rotate(1deg);
+    }
+    75% {
+        transform: translateY(-48%) rotate(-1deg);
+    }
+    100% {
+        transform: translateY(-50%) rotate(0deg);
+    }
 }

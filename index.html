@@ -10,21 +10,24 @@
 </head>
 
 <body>
-
     <div id="start-screen">
-        <h1>Welcome to Spaceman!</h1>
+        <h1 id="title">Welcome to Spaceman!</h1>
+        <img src="../imgs/start/pencil.png" alt="pencil" id="start-pencil">
+        
+        <div id="dropdown-container">
         <select id="category-select">
             <option value="" disabled selected>Select your category</option>
             <option value="random">Random</option>
         </select>
         <select id="difficulty-select">
-            <option value="" disabled selected>Select your difficulty-select</option>
+            <option value="" disabled selected>Select your difficulty</option>
             <option value="random">Random</option>
         </select>
-        <select id="theme-select" class="hidden">
+        <select id="theme-select" >
             <option value="" disabled selected>Select your theme</option>
             <option value="random">Random</option>
         </select>
+        </div>
         <button id="start-btn">Start Game</button>
     </div>
     <div id="game-board" class="hidden">
