@@ -126,7 +126,8 @@ const wordList = [
   { category: "characters", difficulty: "hard", clue: "pokemon professor", word: "oak" },
   { category: "characters", difficulty: "hard", clue: "animated horse", word: "bojack" }
 ];
-const themeList = ["space", "western", "nature", "invaders",];
+const themeList = ["space", "western", "nature", "invaders"];
+
 // DOM Elements
 const categorySelect = document.getElementById("category-select");
 const difficultySelect = document.getElementById("difficulty-select");
@@ -143,6 +144,7 @@ const wordRevealEl = document.getElementById("wordReveal");
 const clueTextEl = document.getElementById("clue-text");
 const livesTextEl = document.getElementById("lives-remaining");
 const wordDisplayEl = document.getElementById("masked-word");
+
 // Game Config
 const clueRevealLives = 2;
 
@@ -153,10 +155,12 @@ let currentWordObj = null;
 let currentWord = "";
 let maskedWord = [];
 let guessedLetters = [];
+
 // Derived Data
 const categories = [...new Set(wordList.map(word => word.category))];
 const difficulties = [...new Set(wordList.map(word => word.difficulty))];
 const themes = [...new Set(themeList)];
+
 // Initialize Select Options
 function populateSelectOptions() {
   categories.forEach(category => {
@@ -182,6 +186,7 @@ function populateSelectOptions() {
 }
 
 populateSelectOptions();
+
 // Game Functions
 function startGame() {
   // Reset game state
@@ -221,6 +226,22 @@ function startGame() {
     gameBoard.classList.add(selectedTheme);
   }
 
+  const themeCharacter = document.getElementById("theme-character");
+  themeCharacter.classList.add("hidden"); // Hide by default
+  themeCharacter.classList.remove("fly-away", "win-grow"); // reset any previous animations
+
+  if (selectedTheme === "space") {
+    themeCharacter.src = "imgs/space/spaceman.png";
+    themeCharacter.alt = "spaceman";
+    themeCharacter.classList.remove("hidden");
+  } else if (selectedTheme === "western") {
+    themeCharacter.src = "imgs/western/cowboy.png";
+    themeCharacter.alt = "cowboy on horse";
+    themeCharacter.classList.remove("hidden");
+  } else {
+    themeCharacter.classList.add("hidden");
+  }
+
   // Filter words
   const filteredWords = wordList.filter(
     wordObj => wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
@@ -231,18 +252,13 @@ function startGame() {
   const randomIndex = Math.floor(Math.random() * filteredWords.length);
   currentWordObj = filteredWords[randomIndex];
   currentWord = currentWordObj.word.toUpperCase();
-
   maskedWord = currentWord.split("").map(() => "_");
-
 
   // Update displays
   updateMaskedWordDisplay();
   updateClue();
   updateLivesDisplay();
-
-  console.log("Selected Theme:", selectedTheme);
 }
-
 
 function updateClue() {
   const livesUntilReveal = lives - clueRevealLives;
@@ -289,36 +305,51 @@ function checkWinCondition() {
   if (lives <= 0 || wordGuessed) {
     gameOver = true;
 
-    endGameMessageEl.textContent = wordGuessed
-      ? "Well done my guy!"
-      : "Game Over!";
+    endGameMessageEl.textContent = wordGuessed ? "Well done, my guy!" : "Game Over!";
     wordRevealEl.textContent = `The word was: ${currentWord}`;
 
-    // SPACE THEME SPECIAL BEHAVIOUR
+    const character = document.getElementById("theme-character");
+
     if (gameBoard.classList.contains("space")) {
-      const astronaut = document.getElementById("space-astronaut");
-
       if (wordGuessed) {
-        astronaut.classList.add("win-grow");
+        character.classList.add("win-grow");
 
         setTimeout(() => {
           gameBoard.classList.add("hidden");
           endGame.classList.remove("hidden");
-          astronaut.classList.remove("win-grow"); // reset
+          character.classList.remove("win-grow"); // reset
         }, 1200);
-
       } else {
-        astronaut.classList.add("fly-away");
+        character.classList.add("fly-away");
 
         setTimeout(() => {
           gameBoard.classList.add("hidden");
           endGame.classList.remove("hidden");
-          astronaut.classList.remove("fly-away"); // reset
+          character.classList.remove("fly-away"); // reset
+        }, 2000);
+      }
+
+    } else if (gameBoard.classList.contains("western")) {
+      if (wordGuessed) {
+        character.classList.add("cowboy-win");
+
+        setTimeout(() => {
+          gameBoard.classList.add("hidden");
+          endGame.classList.remove("hidden");
+          character.classList.remove("cowboy-win"); // reset
+        }, 1500);
+      } else {
+        character.classList.add("cowboy-lose");
+
+        setTimeout(() => {
+          gameBoard.classList.add("hidden");
+          endGame.classList.remove("hidden");
+          character.classList.remove("cowboy-lose"); // reset
         }, 2000);
       }
 
     } else {
-      // NON-SPACE THEMES
+      // OTHER NON-SPACE/NON-WESTERN THEMES
       gameBoard.classList.add("hidden");
       endGame.classList.remove("hidden");
     }
@@ -331,7 +362,16 @@ function resetGameUI() {
   gameBoard.classList.add("hidden");
   endGame.classList.add("hidden");
   gameBoard.classList.remove(...themes);
+
+  // Reset all letter buttons
+  const letterButtons = lettersEl.querySelectorAll("button");
+  letterButtons.forEach(btn => {
+    btn.disabled = false;
+    btn.classList.remove("disabled");
+  });
 }
+
+
 
 // Event Listeners
 startBtn.addEventListener("click", startGame);
@@ -340,9 +380,17 @@ lettersEl.addEventListener("click", e => {
   if (e.target.tagName !== "BUTTON") return;
 
   const letter = e.target.id;
+
+  // Always disable the button
   e.target.disabled = true;
+
+  // Show bullet overlay if Western theme
+  if (gameBoard.classList.contains("western")) {
+    e.target.classList.add("disabled");
+  }
+
   letterCheck(letter);
-  console.log(e.target.id)
 });
+
 
 resetBtn.addEventListener("click", resetGameUI);

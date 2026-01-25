@@ -5,17 +5,26 @@
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: "SpaceFont";
     src: url("../fonts/space/space.woff") format("woff");
     font-weight: normal;
     font-style: normal;
 }
+
 body {
     margin: 0;
     padding: 0;
     height: 100%;
 }
+#dropdown-container select option {
+    text-transform: capitalize;
+}
+#dropdown-container select {
+    text-transform: capitalize;
+}
+
 
 .full-screen-layout {
     min-height: 100vh;
@@ -33,25 +42,18 @@ body {
 
 #start-pencil {
     position: absolute;
-    /*removes from normal layout */
     right: 5%;
-    /*pushes slightly from the right edge */
     top: 65%;
-    /*alings it's "top" into the middle*/
     transform: translateY(-50%);
-    /*pulls it up by half it's height (centered now)*/
     height: 300px;
-    /*how many pixels tall */
     pointer-events: none;
-    /*clicks can pass through if needed*/
-
     animation: pencilWobble 2.5s ease-in-out infinite;
-    /*triggers keyframe, smooth slow loop*/
     transform-origin: bottom left;
-    /* ratation pivot from the nib*/
 }
 
-#title, #endGameMessage, #wordReveal {
+#title,
+#endGameMessage,
+#wordReveal {
     font-family: "Rockybilly", cursive;
     font-size: 4rem;
     text-align: center;
@@ -61,13 +63,9 @@ body {
 
 #dropdown-container {
     display: flex;
-    /*align dropdowns horizontally*/
     justify-content: center;
-    /*center on screen*/
     gap: 15px;
-    /*add a space between the options*/
     margin-top: 20px;
-    /*space between options and title*/
 }
 
 #dropdown-container select {
@@ -75,19 +73,15 @@ body {
     font-size: 1.2rem;
     padding: 8px 12px;
     border: 2px solid #333;
-    /* Dark outline*/
     border-radius: 5px;
     background-color: #fff9e6;
-    /* Paper color */
     box-shadow: 2px 2px 0px #333;
-    /* Slight 3D effect */
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 #dropdown-container select:hover {
     transform: translateY(-2px);
-    /* Lift up on hover */
     box-shadow: 3px 3px 0px #333;
 }
 
@@ -121,10 +115,42 @@ body {
     min-height: 100vh;
     margin: 0;
 }
-h1, h2, h3 {
-    margin-top: 0;      /* optional, for headings in game board */
+
+h1,
+h2,
+h3 {
+    margin-top: 0;
 }
 
+/* Theme Character */
+#theme-character {
+    position: absolute;
+    bottom: 100px;
+    left: 50px;
+    height: 300px;
+    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+}
+
+#theme-character.hidden {
+    display: none !important;
+}
+
+/*animations theme character */
+#theme-character.fly-away {
+    transform: translate(100vw, -100vh) rotate(360deg);
+    opacity: 0;
+    transition: transform 2s ease-in, opacity 2s ease-in;
+}
+#theme-character.win-grow {
+    transform: scale(2);
+    transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#theme-character.cowboy-win{
+    animation: cowboyRunCenter 1.5s forwards;
+}
+#theme-character.cowboy-lose{
+    animation: cowboyRunOff 2s forwards;
+}
 /* Themes */
 /* Space Theme */
 #game-board.space {
@@ -141,72 +167,50 @@ h1, h2, h3 {
     position: relative;
 }
 
-/* Astronaut */
-#space-astronaut {
-    position: absolute;      /* keeps it out of normal flow */
-    left: 50px;              /* move closer to the left edge */
-    bottom: 100px;            /* keeps him near bottom */
-    height: 300px;           /* smaller size */
-    transition: transform 1s ease-in-out, opacity 1s ease-in-out;
-}
-#space-astronaut.fly-away {
-    transform: translate(100vw, -100vh) rotate(360deg);
-    opacity: 0;
-    transition: transform 2s ease-in, opacity 2s ease-in;
-}
-#space-astronaut.win-grow {
-    transform: scale(2);
-    transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Container for lives and clue */
 #space-info {
-    display: flex;                
-    justify-content: space-between; /* left/right edges */
-    width: 90%;                  
-    margin: 20px auto;           
-    padding: 0 5%;               
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin: 20px auto;
+    padding: 0 5%;
     font-size: 1.2rem;
     font-weight: bold;
     color: #001a4d;
 }
 
-/* Optional: style the spans inside */
 #space-info span {
     font-weight: bold;
 }
 
-/* Word display */
 #game-board.space #masked-word {
     font-size: 5rem;
     text-align: center;
     margin-bottom: 20px;
     margin-top: 250px;
 }
+
 #game-board.space {
     font-family: "SpaceFont", sans-serif;
 }
-/* Lives & clue */
-#game-board.space h2, 
+
+#game-board.space h2,
 #game-board.space h3 {
     text-align: center;
     margin: 5px 0;
 }
 
-/* Letter buttons container for space theme */
 #game-board.space #letters {
     display: grid;
-    grid-template-columns: repeat(7, 70px); /* 7 columns, each 70px wide */
-    gap: 15px; /* space between buttons */
-    justify-content: center; /* center grid */
+    grid-template-columns: repeat(7, 70px);
+    gap: 15px;
+    justify-content: center;
     margin-top: 30px;
 }
 
-/* Buttons styling */
 #game-board.space #letters button {
-    width: 70px;       /* fixed width */
-    height: 70px;      /* fixed height */
-    font-size: 1.5rem; /* bigger letters */
+    width: 70px;
+    height: 70px;
+    font-size: 1.5rem;
     background-color: #001a4d;
     border: 2px solid white;
     color: white;
@@ -216,30 +220,67 @@ h1, h2, h3 {
     transition: transform 0.2s, box-shadow 0.2s, opacity 0.5s;
 }
 
-/* Sparkle on hover */
 #game-board.space #letters button:hover {
     box-shadow: 0 0 15px 3px #ffffff;
     transform: scale(1.1);
 }
 
-/* Dissolve on click while keeping the button in place */
 #game-board.space #letters button:disabled {
-    opacity: 0.3;           /* semi-transparent */
-    background-color: #001a4d;  /* or darker shade */
-    pointer-events: none;    /* can’t click again */
-    transform: none;         /* remove shrinking */
-    visibility: visible;     /* keeps it in layout */
+    opacity: 0.3;
+    background-color: #001a4d;
+    pointer-events: none;
+    transform: none;
+    visibility: visible;
 }
 
-/*western*/
+/* Western Theme */
 #game-board.western {
     background-color: #f4e2c0;
     background-image: url("../imgs/western/western-background.png");
     min-height: 100vh;
     background-size: cover;
     background-position: center;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 50px;
+    color: #ffffff;
 }
-
+#game-board.western #letters button {
+    width: 70px;
+    height: 70px;
+    background-image: url("../imgs/western/wanted.avif");
+    background-size: cover;
+    border: none;
+    position: relative;
+    color: #000000;
+    font-size: 2rem; 
+    font-weight: bold;
+    line-height: 1.2;
+    padding-top: 15px;
+    padding-bottom: 0px;
+}
+#game-board.western #letters {
+    display: grid;
+    grid-template-columns: repeat(7, 70px);
+    gap: 15px;
+    justify-content: start;
+    margin: 0;
+}
+#game-board.western #letters button.disabled::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../imgs/western/bullet.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+}
+/* Nature Theme */
 #game-board.nature {
     background-color: #c3f0c3;
     background-image: url("../imgs/nature/nature-background.jpg");
@@ -248,6 +289,7 @@ h1, h2, h3 {
     background-position: center;
 }
 
+/* Invaders Theme */
 #game-board.invaders {
     background-color: #000000;
     background-image: url("../imgs/invaders/invader-background.avif");
@@ -255,7 +297,6 @@ h1, h2, h3 {
     background-size: cover;
     background-position: center;
 }
-
 button {
     padding: 10px;
     border-radius: 20px;
@@ -264,11 +305,9 @@ button {
     font-weight: bold;
     cursor: pointer;
 }
-
 button:disabled {
     cursor: not-allowed;
 }
-
 .hidden {
     display: none !important;
     pointer-events: none;
@@ -276,25 +315,38 @@ button:disabled {
 #masked-word {
     font-family: monospace !important;
 }
-
 @keyframes pencilWobble {
     0% {
         transform: translateY(-50%) rotate(0deg);
     }
-
     25% {
         transform: translateY(-52%) rotate(-2deg);
     }
-
     50% {
         transform: translateY(-50%) rotate(1deg);
     }
-
     75% {
         transform: translateY(-48%) rotate(-1deg);
     }
-
     100% {
         transform: translateY(-50%) rotate(0deg);
     }
+}
+@keyframes cowboyRunCenter {
+    0% {
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        transform: translateX(calc(50vw - 50px)) scale(2);
+    }
+}
+
+@keyframes cowboyRunOff {
+    0% {
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        transform: translateX(100vw) scale(1);
+    }
+    
 }
