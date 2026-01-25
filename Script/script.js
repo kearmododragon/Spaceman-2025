@@ -232,10 +232,8 @@ function startGame() {
   currentWordObj = filteredWords[randomIndex];
   currentWord = currentWordObj.word.toUpperCase();
 
-  // **Mask word according to theme**
-  maskedWord = currentWord.split("").map(() => {
-    return gameBoard.classList.contains("space") ? "=" : "_";
-  });
+  maskedWord = currentWord.split("").map(() => "_");
+
 
   // Update displays
   updateMaskedWordDisplay();
@@ -286,34 +284,41 @@ function updateLivesDisplay() {
 }
 
 function checkWinCondition() {
-  // Determine mask character based on current theme
-  const maskChar = gameBoard.classList.contains("space") ? "=" : "_";
-
-  // Check if all letters are guessed
-  const wordGuessed = !maskedWord.includes(maskChar);
+  const wordGuessed = !maskedWord.includes("_");
 
   if (lives <= 0 || wordGuessed) {
     gameOver = true;
 
-    // Set the end game messages
-    endGameMessageEl.textContent = wordGuessed ? "Well done my guy!" : "Game Over!";
+    endGameMessageEl.textContent = wordGuessed
+      ? "Well done my guy!"
+      : "Game Over!";
     wordRevealEl.textContent = `The word was: ${currentWord}`;
 
-    // Space theme: animate astronaut before showing end screen
+    // SPACE THEME SPECIAL BEHAVIOUR
     if (gameBoard.classList.contains("space")) {
       const astronaut = document.getElementById("space-astronaut");
-      astronaut.classList.add("fly-away");
 
-      // Wait for the CSS animation to complete
-      setTimeout(() => {
-        gameBoard.classList.add("hidden");
-        endGame.classList.remove("hidden");
+      if (wordGuessed) {
+        astronaut.classList.add("win-grow");
 
-        // Reset astronaut for next game
-        astronaut.classList.remove("fly-away");
-      }, 2000); // should match your CSS transition duration
+        setTimeout(() => {
+          gameBoard.classList.add("hidden");
+          endGame.classList.remove("hidden");
+          astronaut.classList.remove("win-grow"); // reset
+        }, 1200);
+
+      } else {
+        astronaut.classList.add("fly-away");
+
+        setTimeout(() => {
+          gameBoard.classList.add("hidden");
+          endGame.classList.remove("hidden");
+          astronaut.classList.remove("fly-away"); // reset
+        }, 2000);
+      }
+
     } else {
-      // Default behavior for other themes: instant switch
+      // NON-SPACE THEMES
       gameBoard.classList.add("hidden");
       endGame.classList.remove("hidden");
     }
@@ -337,6 +342,7 @@ lettersEl.addEventListener("click", e => {
   const letter = e.target.id;
   e.target.disabled = true;
   letterCheck(letter);
+  console.log(e.target.id)
 });
 
 resetBtn.addEventListener("click", resetGameUI);

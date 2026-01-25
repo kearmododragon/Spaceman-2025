@@ -145,7 +145,7 @@ h1, h2, h3 {
 #space-astronaut {
     position: absolute;      /* keeps it out of normal flow */
     left: 50px;              /* move closer to the left edge */
-    bottom: 50px;            /* keeps him near bottom */
+    bottom: 100px;            /* keeps him near bottom */
     height: 300px;           /* smaller size */
     transition: transform 1s ease-in-out, opacity 1s ease-in-out;
 }
@@ -154,6 +154,11 @@ h1, h2, h3 {
     opacity: 0;
     transition: transform 2s ease-in, opacity 2s ease-in;
 }
+#space-astronaut.win-grow {
+    transform: scale(2);
+    transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 
 /* Container for lives and clue */
 #space-info {
@@ -271,6 +276,9 @@ button:disabled {
 .hidden {
     display: none !important;
     pointer-events: none;
+}
+#masked-word {
+    font-family: monospace !important;
 }
 
 @keyframes pencilWobble {
