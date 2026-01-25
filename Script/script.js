@@ -197,21 +197,16 @@ function startGame() {
     btn.classList.remove("hidden");
   });
 
-  // Reset displays
-  updateLivesDisplay();
-  updateClue();
+  // Hide start screen and show game board
+  startScreen.classList.add("hidden");
+  gameBoard.classList.remove("hidden");
+  gameBoard.classList.remove(...themeList);
 
-  // Hide start screen and remove old theme 
-  startScreen.classList.add("hidden");         
-  gameBoard.classList.remove("hidden");        
-  gameBoard.classList.remove(...themeList);    
-
-  // Read user selections 
+  // Read user selections
   let selectedCategory = categorySelect.value;
   let selectedDifficulty = difficultySelect.value;
   let selectedTheme = themeSelect.value;
 
-  // Handle random selections
   if (selectedCategory === "random") {
     selectedCategory = categories[Math.floor(Math.random() * categories.length)];
   }
@@ -222,23 +217,25 @@ function startGame() {
     selectedTheme = themes[Math.floor(Math.random() * themes.length)];
   }
 
-  // Apply theme class to game board
   if (selectedTheme) {
     gameBoard.classList.add(selectedTheme);
   }
 
-  // Filter words based on selections
+  // Filter words
   const filteredWords = wordList.filter(
     wordObj => wordObj.category === selectedCategory && wordObj.difficulty === selectedDifficulty
   );
 
   if (filteredWords.length === 0) return;
 
-  // Pick a random word
   const randomIndex = Math.floor(Math.random() * filteredWords.length);
   currentWordObj = filteredWords[randomIndex];
   currentWord = currentWordObj.word.toUpperCase();
-  maskedWord = currentWord.split("").map(() => "_");
+
+  // **Mask word according to theme**
+  maskedWord = currentWord.split("").map(() => {
+    return gameBoard.classList.contains("space") ? "=" : "_";
+  });
 
   // Update displays
   updateMaskedWordDisplay();
@@ -247,6 +244,7 @@ function startGame() {
 
   console.log("Selected Theme:", selectedTheme);
 }
+
 
 function updateClue() {
   const livesUntilReveal = lives - clueRevealLives;
@@ -288,22 +286,40 @@ function updateLivesDisplay() {
 }
 
 function checkWinCondition() {
-  const wordGuessed = !maskedWord.includes("_");
+  // Determine mask character based on current theme
+  const maskChar = gameBoard.classList.contains("space") ? "=" : "_";
 
-  if (lives <= 0) {
+  // Check if all letters are guessed
+  const wordGuessed = !maskedWord.includes(maskChar);
+
+  if (lives <= 0 || wordGuessed) {
     gameOver = true;
-    endGameMessageEl.textContent = "Game Over!";
+
+    // Set the end game messages
+    endGameMessageEl.textContent = wordGuessed ? "Well done my guy!" : "Game Over!";
     wordRevealEl.textContent = `The word was: ${currentWord}`;
-    gameBoard.classList.add("hidden");
-    endGame.classList.remove("hidden");
-  } else if (wordGuessed) {
-    gameOver = true;
-    endGameMessageEl.textContent = "Well done my guy!";
-    wordRevealEl.textContent = `The word was: ${currentWord}`;
-    gameBoard.classList.add("hidden");
-    endGame.classList.remove("hidden");
+
+    // Space theme: animate astronaut before showing end screen
+    if (gameBoard.classList.contains("space")) {
+      const astronaut = document.getElementById("space-astronaut");
+      astronaut.classList.add("fly-away");
+
+      // Wait for the CSS animation to complete
+      setTimeout(() => {
+        gameBoard.classList.add("hidden");
+        endGame.classList.remove("hidden");
+
+        // Reset astronaut for next game
+        astronaut.classList.remove("fly-away");
+      }, 2000); // should match your CSS transition duration
+    } else {
+      // Default behavior for other themes: instant switch
+      gameBoard.classList.add("hidden");
+      endGame.classList.remove("hidden");
+    }
   }
 }
+
 
 function resetGameUI() {
   startScreen.classList.remove("hidden");
@@ -319,7 +335,6 @@ lettersEl.addEventListener("click", e => {
   if (e.target.tagName !== "BUTTON") return;
 
   const letter = e.target.id;
-  e.target.classList.add("hidden");
   e.target.disabled = true;
   letterCheck(letter);
 });

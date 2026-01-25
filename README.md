@@ -24,7 +24,17 @@ const themeList=["space", "western", "nature", "ocean", "zoo"]
 
 
 Space - letters are stars? Spaceman on the moon for design
+CSS generally done, just waiting on the final. 
+
+- The font is broken. Must find a new one (letters are coming up wrong)
+- space man flies away on win and lose, only want it for lose. For win he can just get big or something. 
+
+Then we're good to move one.
+
+
+
+
+
 western - letters are wanted posters. They get "shot" , classic stickman hangman
 nature - petals on flower are lives/hangman, cutesy
-ocean - fish are lives, underwater
-zoo - animals are the lives 
+invaders - each letter is represented by an "invader". They become a letter when they get revealed. end of lives means you die. 
