@@ -26,6 +26,11 @@ const themeList=["space", "western", "nature", "ocean", "zoo"]
 
 
 
-western - letters are wanted posters. They get "shot" , classic stickman hangman
+western -  classic stickman hangman updated on life lost
+sound effects on letter choice 
+location of UI needs updating
+
+
+
 nature - petals on flower are lives/hangman, cutesy
 invaders - each letter is represented by an "invader". They become a letter when they get revealed. end of lives means you die. 
