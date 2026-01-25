@@ -23,14 +23,6 @@ Ice box
 const themeList=["space", "western", "nature", "ocean", "zoo"]
 
 
-Space - letters are stars? Spaceman on the moon for design
-CSS generally done, just waiting on the final. 
-
-- space man flies away on win and lose, only want it for lose. For win he can just get big or something. 
-
-Then we're good to move one.
-
-
 
 
 
