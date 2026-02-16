@@ -10,8 +10,8 @@ const wordList = [
   { category: "food", difficulty: "medium", clue: "Green vegetable", word: "broccoli" },
   { category: "food", difficulty: "medium", clue: "Mexican wrap", word: "burrito" },
   { category: "food", difficulty: "medium", clue: "Asian dumpling", word: "gyoza" },
-  { category: "food", difficulty: "medium", clue: "Fried potato", word: "frenchfries" },
-  { category: "food", difficulty: "hard", clue: "Italian pie", word: "pizza" },
+  { category: "food", difficulty: "medium", clue: "Fried potato", word: "french fries" },
+  { category: "food", difficulty: "hard", clue: "Italian pie", word: "pizza pie" },
   { category: "food", difficulty: "hard", clue: "Japanese noodles", word: "udon" },
   { category: "food", difficulty: "hard", clue: "Fermented cabbage", word: "sauerkraut" },
   { category: "food", difficulty: "hard", clue: "Middle Eastern dip", word: "hummus" },
@@ -20,7 +20,8 @@ const wordList = [
   { category: "food", difficulty: "hard", clue: "Korean side dish", word: "kimchi" },
   { category: "food", difficulty: "hard", clue: "French pastry", word: "croissant" },
   { category: "food", difficulty: "hard", clue: "Swiss cheese", word: "gruyere" },
-  { category: "food", difficulty: "hard", clue: "Thai soup", word: "tomyum" },
+  { category: "food", difficulty: "hard", clue: "Thai soup", word: "tom yum" },
+
   // PLACES (20)
   { category: "places", difficulty: "easy", clue: "US city", word: "chicago" },
   { category: "places", difficulty: "easy", clue: "UK capital", word: "london" },
@@ -39,29 +40,31 @@ const wordList = [
   { category: "places", difficulty: "hard", clue: "Turkish city", word: "izmir" },
   { category: "places", difficulty: "hard", clue: "Greek island", word: "zakynthos" },
   { category: "places", difficulty: "hard", clue: "Chilean desert", word: "atacama" },
-  { category: "places", difficulty: "hard", clue: "Peruvian site", word: "machupicchu" },
+  { category: "places", difficulty: "hard", clue: "Peruvian site", word: "machu picchu" },
   { category: "places", difficulty: "hard", clue: "Mongolian capital", word: "ulaanbaatar" },
+
   // PEOPLE (20)
-  { category: "people", difficulty: "easy", clue: "First US president", word: "washington" },
+  { category: "people", difficulty: "easy", clue: "First US president", word: "george washington" },
   { category: "people", difficulty: "easy", clue: "Famous singer", word: "madonna" },
-  { category: "people", difficulty: "easy", clue: "Tech billionaire", word: "musk" },
-  { category: "people", difficulty: "easy", clue: "Civil rights leader", word: "king" },
+  { category: "people", difficulty: "easy", clue: "Tech billionaire", word: "elon musk" },
+  { category: "people", difficulty: "easy", clue: "Civil rights leader", word: "martin luther king jr" },
   { category: "people", difficulty: "easy", clue: "Cartoon sailor", word: "popeye" },
-  { category: "people", difficulty: "medium", clue: "Renaissance artist", word: "michelangelo" },
-  { category: "people", difficulty: "medium", clue: "Scientist of gravity", word: "newton" },
-  { category: "people", difficulty: "medium", clue: "Roman ruler", word: "caesar" },
-  { category: "people", difficulty: "medium", clue: "Fictional detective", word: "sherlock" },
+  { category: "people", difficulty: "medium", clue: "Renaissance artist", word: "michelangelo buonarroti" },
+  { category: "people", difficulty: "medium", clue: "Scientist of gravity", word: "isaac newton" },
+  { category: "people", difficulty: "medium", clue: "Roman ruler", word: "julius caesar" },
+  { category: "people", difficulty: "medium", clue: "Fictional detective", word: "sherlock holmes" },
   { category: "people", difficulty: "medium", clue: "Greek philosopher", word: "plato" },
-  { category: "people", difficulty: "hard", clue: "Composer", word: "tchaikovsky" },
-  { category: "people", difficulty: "hard", clue: "Surrealist artist", word: "dali" },
-  { category: "people", difficulty: "hard", clue: "Mathematician", word: "fibonacci" },
-  { category: "people", difficulty: "hard", clue: "Ancient general", word: "hannibal" },
-  { category: "people", difficulty: "hard", clue: "Poet", word: "ts elliot" },
+  { category: "people", difficulty: "hard", clue: "Composer", word: "pyotr tchaikovsky" },
+  { category: "people", difficulty: "hard", clue: "Surrealist artist", word: "salvador dali" },
+  { category: "people", difficulty: "hard", clue: "Mathematician", word: "leonardo fibonacci" },
+  { category: "people", difficulty: "hard", clue: "Ancient general", word: "hannibal barca" },
+  { category: "people", difficulty: "hard", clue: "Poet", word: "t s elliot" },
   { category: "people", difficulty: "hard", clue: "Mythical hero", word: "achilles" },
   { category: "people", difficulty: "hard", clue: "Norse god", word: "odin" },
   { category: "people", difficulty: "hard", clue: "Egyptian queen", word: "cleopatra" },
-  { category: "people", difficulty: "hard", clue: "Russian author", word: "dostoevsky" },
-  { category: "people", difficulty: "hard", clue: "German philosopher", word: "nietzsche" },
+  { category: "people", difficulty: "hard", clue: "Russian author", word: "fyodor dostoevsky" },
+  { category: "people", difficulty: "hard", clue: "German philosopher", word: "friedrich nietzsche" },
+
   // SPORTS (20)
   { category: "sports", difficulty: "easy", clue: "Bat and ball", word: "baseball" },
   { category: "sports", difficulty: "easy", clue: "Kicking game", word: "soccer" },
@@ -83,6 +86,7 @@ const wordList = [
   { category: "sports", difficulty: "hard", clue: "French ball game", word: "petanque" },
   { category: "sports", difficulty: "hard", clue: "Highland sport", word: "cabertoss" },
   { category: "sports", difficulty: "hard", clue: "Winter endurance", word: "biathlon" },
+
   // ANIMALS (20)
   { category: "animals", difficulty: "easy", clue: "Farm animal", word: "cow" },
   { category: "animals", difficulty: "easy", clue: "Loyal pet", word: "dog" },
@@ -90,7 +94,7 @@ const wordList = [
   { category: "animals", difficulty: "easy", clue: "Jungle king", word: "lion" },
   { category: "animals", difficulty: "easy", clue: "Long neck", word: "giraffe" },
   { category: "animals", difficulty: "medium", clue: "Australian hopper", word: "kangaroo" },
-  { category: "animals", difficulty: "medium", clue: "Arctic bear", word: "polar" },
+  { category: "animals", difficulty: "medium", clue: "Arctic bear", word: "polar bear" },
   { category: "animals", difficulty: "medium", clue: "Slow climber", word: "sloth" },
   { category: "animals", difficulty: "medium", clue: "Smart marine mammal", word: "dolphin" },
   { category: "animals", difficulty: "medium", clue: "Night bird", word: "owl" },
@@ -98,34 +102,36 @@ const wordList = [
   { category: "animals", difficulty: "hard", clue: "African antelope", word: "wildebeest" },
   { category: "animals", difficulty: "hard", clue: "Spotted wild cat", word: "ocelot" },
   { category: "animals", difficulty: "hard", clue: "Armored mammal", word: "pangolin" },
-  { category: "animals", difficulty: "hard", clue: "Nocturnal primate", word: "ayeaye" },
+  { category: "animals", difficulty: "hard", clue: "Nocturnal primate", word: "aye aye" },
   { category: "animals", difficulty: "hard", clue: "Large flightless bird", word: "cassowary" },
   { category: "animals", difficulty: "hard", clue: "Desert fox", word: "fennec" },
   { category: "animals", difficulty: "hard", clue: "Poison frog family", word: "dendrobatid" },
-  { category: "animals", difficulty: "hard", clue: "Deep sea shark", word: "goblinshark" },
+  { category: "animals", difficulty: "hard", clue: "Deep sea shark", word: "goblin shark" },
   { category: "animals", difficulty: "hard", clue: "Ancient fish", word: "coelacanth" },
+
   // CHARACTERS (20)
   { category: "characters", difficulty: "easy", clue: "pokemon mascot", word: "pikachu" },
   { category: "characters", difficulty: "easy", clue: "yellow sponge", word: "spongebob" },
-  { category: "characters", difficulty: "easy", clue: "pokemon trainer", word: "ash" },
-  { category: "characters", difficulty: "easy", clue: "office manager", word: "michael" },
+  { category: "characters", difficulty: "easy", clue: "pokemon trainer", word: "ash ketchum" },
+  { category: "characters", difficulty: "easy", clue: "office manager", word: "michael scott" },
   { category: "characters", difficulty: "easy", clue: "blue hedgehog", word: "sonic" },
-  { category: "characters", difficulty: "medium", clue: "paper salesman", word: "dwight" },
+  { category: "characters", difficulty: "medium", clue: "paper salesman", word: "dwight schrute" },
   { category: "characters", difficulty: "medium", clue: "pokemon villain", word: "jessie" },
   { category: "characters", difficulty: "medium", clue: "sitcom neighbor", word: "kramer" },
-  { category: "characters", difficulty: "medium", clue: "cartoon dad", word: "homer" },
+  { category: "characters", difficulty: "medium", clue: "cartoon dad", word: "homer simpson" },
   { category: "characters", difficulty: "medium", clue: "anime pirate", word: "luffy" },
   { category: "characters", difficulty: "hard", clue: "pokemon villain leader", word: "giovanni" },
   { category: "characters", difficulty: "hard", clue: "office temp", word: "ryan" },
-  { category: "characters", difficulty: "hard", clue: "Zombie killer", word: "rick" },
+  { category: "characters", difficulty: "hard", clue: "Zombie killer", word: "rick grimes" },
   { category: "characters", difficulty: "hard", clue: "sitcom neurotic", word: "george costanza" },
   { category: "characters", difficulty: "hard", clue: "pokemon rival", word: "gary oak" },
   { category: "characters", difficulty: "hard", clue: "anime ninja", word: "kakashi" },
   { category: "characters", difficulty: "hard", clue: "cartoon villain", word: "mojojojo" },
   { category: "characters", difficulty: "hard", clue: "office accountant", word: "kevin" },
   { category: "characters", difficulty: "hard", clue: "pokemon professor", word: "oak" },
-  { category: "characters", difficulty: "hard", clue: "animated horse", word: "bojack" }
+  { category: "characters", difficulty: "hard", clue: "animated horse", word: "bojack horseman" }
 ];
+
 const themeList = ["space", "western", "nature", "invaders"];
 
 // DOM Elements
@@ -261,7 +267,9 @@ function startGame() {
   const randomIndex = Math.floor(Math.random() * filteredWords.length);
   currentWordObj = filteredWords[randomIndex];
   currentWord = currentWordObj.word.toUpperCase();
-  maskedWord = currentWord.split("").map(() => "_");
+  maskedWord = currentWord.split("").map(char => {
+    return /[A-Z]/.test(char) ? "_" : char;
+  });
 
   // Update displays
   updateMaskedWordDisplay();
@@ -365,7 +373,6 @@ function checkWinCondition() {
   }
 }
 
-
 function resetGameUI() {
   startScreen.classList.remove("hidden");
   gameBoard.classList.add("hidden");
@@ -380,7 +387,6 @@ function resetGameUI() {
     btn.classList.remove("disabled");
   });
 }
-
 // Event Listeners
 startBtn.addEventListener("click", startGame);
 
