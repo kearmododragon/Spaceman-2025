@@ -144,6 +144,7 @@ const wordRevealEl = document.getElementById("wordReveal");
 const clueTextEl = document.getElementById("clue-text");
 const livesTextEl = document.getElementById("lives-remaining");
 const wordDisplayEl = document.getElementById("masked-word");
+const gunshotSound = new Audio("sounds/western/gun.mp3");
 
 // Game Config
 const clueRevealLives = 2;
@@ -183,11 +184,19 @@ function populateSelectOptions() {
     option.textContent = theme;
     themeSelect.appendChild(option);
   });
+  checkStartButtonStatus();
 }
 
 populateSelectOptions();
 
 // Game Functions
+function checkStartButtonStatus() {
+  const themeSelected = themeSelect.value && themeSelect.value !== "";
+  const categorySelected = categorySelect.value && categorySelect.value !== "";
+  const difficultySelected = difficultySelect.value && difficultySelect.value !== "";
+  startBtn.disabled = !(categorySelected && difficultySelected && themeSelected);
+
+}
 function startGame() {
   // Reset game state
   gameOver = false;
@@ -362,6 +371,7 @@ function resetGameUI() {
   gameBoard.classList.add("hidden");
   endGame.classList.add("hidden");
   gameBoard.classList.remove(...themes);
+  checkStartButtonStatus();
 
   // Reset all letter buttons
   const letterButtons = lettersEl.querySelectorAll("button");
@@ -370,8 +380,6 @@ function resetGameUI() {
     btn.classList.remove("disabled");
   });
 }
-
-
 
 // Event Listeners
 startBtn.addEventListener("click", startGame);
@@ -386,11 +394,14 @@ lettersEl.addEventListener("click", e => {
 
   // Show bullet overlay if Western theme
   if (gameBoard.classList.contains("western")) {
+    gunshotSound.currentTime = 0;
+    gunshotSound.play();
     e.target.classList.add("disabled");
   }
 
   letterCheck(letter);
 });
-
-
 resetBtn.addEventListener("click", resetGameUI);
+categorySelect.addEventListener("change", checkStartButtonStatus);
+difficultySelect.addEventListener("change", checkStartButtonStatus);
+themeSelect.addEventListener("change", checkStartButtonStatus);

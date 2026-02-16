@@ -264,9 +264,30 @@ h3 {
     display: grid;
     grid-template-columns: repeat(7, 70px);
     gap: 15px;
-    justify-content: start;
+    justify-content: start;  /* aligns to left */
+    position: absolute;
+    top: 50px;               /* adjust height above cowboy */
+    left: 50px;              /* indent from left */
     margin: 0;
 }
+#game-board.western #space-info {
+    position: absolute;           /* remove it from flex layout */
+    bottom: 50px;                 /* distance from bottom */
+    left: 50%;                    /* horizontal center */
+    transform: translateX(-50%);  /* center it exactly */
+    font-size: 1.5rem;
+    color: black;
+    background-color: rgba(187, 96, 96, 0.7); /* semi-transparent */
+    padding: 10px 20px;
+    border-radius: 10px;
+
+    display: inline-flex;         /* shrink to fit content */
+    gap: 40px;                    
+    justify-content: center;
+    align-items: center;
+    width: auto;                  /* do not stretch full width */
+}
+
 #game-board.western #letters button.disabled::after {
     content: "";
     position: absolute;
@@ -280,6 +301,15 @@ h3 {
     background-position: center;
     pointer-events: none;
 }
+#game-board.western #masked-word {
+    font-size: 4rem;          /* larger for visibility */
+    color: rgb(219, 231, 46);              /* theme color */
+    position: absolute;        /* absolute positioning */
+    top: 450px;               /* vertical position, adjust as needed */
+    left: 33%;                /* 1/3rd from the left */
+    font-family: monospace;   /* keeps letter spacing consistent */
+}
+
 /* Nature Theme */
 #game-board.nature {
     background-color: #c3f0c3;
