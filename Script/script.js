@@ -11,7 +11,7 @@ const wordList = [
   { category: "food", difficulty: "medium", clue: "Mexican wrap", word: "burrito" },
   { category: "food", difficulty: "medium", clue: "Asian dumpling", word: "gyoza" },
   { category: "food", difficulty: "medium", clue: "Fried potato", word: "french fries" },
-  { category: "food", difficulty: "hard", clue: "Italian pie", word: "pizza pie" },
+  { category: "food", difficulty: "hard", clue: "Italian pie", word: "pizza" },
   { category: "food", difficulty: "hard", clue: "Japanese noodles", word: "udon" },
   { category: "food", difficulty: "hard", clue: "Fermented cabbage", word: "sauerkraut" },
   { category: "food", difficulty: "hard", clue: "Middle Eastern dip", word: "hummus" },
@@ -253,6 +253,11 @@ function startGame() {
     themeCharacter.src = "imgs/western/cowboy.png";
     themeCharacter.alt = "cowboy on horse";
     themeCharacter.classList.remove("hidden");
+  } else if (selectedTheme === "nature") {
+    themeCharacter.src = "imgs/nature/flower.png";
+    themeCharacter.alt = "Flower stem";
+    themeCharacter.classList.remove("hidden");
+    createPetals();
   } else {
     themeCharacter.classList.add("hidden");
   }
@@ -387,6 +392,36 @@ function resetGameUI() {
     btn.classList.remove("disabled");
   });
 }
+
+function createPetals(){
+  if (!gameBoard.classList.contains("nature")) return;
+
+  const flower = document.getElementById("theme-character");
+
+  const oldPetals = flower.querySelectorAll(".petal");
+  oldPetals.forEach(p => p.remove());
+
+  const radius = 50; // distance petals from stem center
+  const centerX = flower.clientWidth / 2; 
+  const centerY = 50; // adjust how high above stem the petals sit
+
+  for (let i = 0; i < 7; i++) {
+    const petal = document.createElement("img");
+    petal.src = "imgs/nature/petal.png"
+    petal.classList.add("petal");
+    petal.dataset.index = i;
+
+    const angle = (i / 7) * 180 - 90; // arc from left to right
+    const x = centerX + radius * Math.cos(angle * Math.PI / 180) - 20; // -20 to center petal
+    const y = centerY - radius * Math.sin(angle * Math.PI / 180);
+
+    petal.style.left = `${x}px`;
+    petal.style.top  = `${y}px`;
+
+    flower.appendChild(petal);
+  }
+}
+
 // Event Listeners
 startBtn.addEventListener("click", startGame);
 
@@ -411,3 +446,7 @@ resetBtn.addEventListener("click", resetGameUI);
 categorySelect.addEventListener("change", checkStartButtonStatus);
 difficultySelect.addEventListener("change", checkStartButtonStatus);
 themeSelect.addEventListener("change", checkStartButtonStatus);
+
+document.fonts.ready.then(() => {
+  document.getElementById("start-screen").classList.remove("hidden");
+});

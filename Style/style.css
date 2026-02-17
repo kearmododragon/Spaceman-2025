@@ -25,6 +25,16 @@ body {
     text-transform: capitalize;
 }
 
+#dropdown-container select {
+    padding: 1px 1px;
+    line-height: 10;
+    height: 100px;
+}
+
+#game-info {
+  display: flex;
+  gap: 40px;
+}
 
 .full-screen-layout {
     min-height: 100vh;
@@ -135,6 +145,31 @@ h3 {
     display: none !important;
 }
 
+/* Nature theme character */
+#game-board.nature #theme-character {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    height: 400px;
+    width: auto; 
+    z-index: 1;
+}
+
+
+#game-board.nature #theme-character .petal {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+}
+
+#theme-character .petal[data-index="0"] { top: 10px; left: 50px; transform: rotate(0deg); }
+#theme-character .petal[data-index="1"] { top: 20px; left: 30px; transform: rotate(-15deg); }
+#theme-character .petal[data-index="2"] { top: 20px; left: 70px; transform: rotate(15deg); }
+#theme-character .petal[data-index="3"] { top: 40px; left: 20px; transform: rotate(-30deg); }
+#theme-character .petal[data-index="4"] { top: 40px; left: 80px; transform: rotate(30deg); }
+#theme-character .petal[data-index="5"] { top: 60px; left: 35px; transform: rotate(-10deg); }
+#theme-character .petal[data-index="6"] { top: 60px; left: 65px; transform: rotate(10deg); }
 /*animations theme character */
 #theme-character.fly-away {
     transform: translate(100vw, -100vh) rotate(360deg);
@@ -167,7 +202,7 @@ h3 {
     position: relative;
 }
 
-#space-info {
+#game-info {
     display: flex;
     justify-content: space-between;
     width: 90%;
@@ -178,7 +213,7 @@ h3 {
     color: #001a4d;
 }
 
-#space-info span {
+#game-info span {
     font-weight: bold;
 }
 
@@ -271,7 +306,7 @@ h3 {
     left: 50px;              /* indent from left */
     margin: 0;
 }
-#game-board.western #space-info {
+#game-board.western #game-info {
     position: absolute;           /* remove it from flex layout */
     bottom: 50px;                 /* distance from bottom */
     left: 50%;                    /* horizontal center */
@@ -313,13 +348,18 @@ h3 {
 
 /* Nature Theme */
 #game-board.nature {
-    background-color: #c3f0c3;
-    background-image: url("../imgs/nature/nature-background.jpg");
+    position: relative;        /* container for absolutely positioned children */
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* main content stays at top */
+    background-image: url("../imgs/nature/nature-background.jpg");
     background-size: cover;
     background-position: center;
+    overflow: hidden;          /* prevent scroll caused by flower */
+    padding-bottom: 0;         /* remove, no longer needed */
 }
-
 /* Invaders Theme */
 #game-board.invaders {
     background-color: #000000;
