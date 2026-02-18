@@ -163,6 +163,8 @@ let currentWord = "";
 let maskedWord = [];
 let guessedLetters = [];
 
+let petals = [];
+
 // Derived Data
 const categories = [...new Set(wordList.map(word => word.category))];
 const difficulties = [...new Set(wordList.map(word => word.difficulty))];
@@ -192,7 +194,6 @@ function populateSelectOptions() {
   });
   checkStartButtonStatus();
 }
-
 populateSelectOptions();
 
 // Game Functions
@@ -293,9 +294,10 @@ function updateClue() {
 
 function letterCheck(letter) {
   if (gameOver) return;
-
+console.log("Lives now:", lives);
   let foundMatch = false;
 
+  // Reveal matching letters
   for (let i = 0; i < currentWord.length; i++) {
     if (currentWord[i] === letter) {
       maskedWord[i] = letter;
@@ -307,10 +309,33 @@ function letterCheck(letter) {
     lives--;
     updateLivesDisplay();
     updateClue();
+
+    // 🌸 Nature petal drop
+    if (gameBoard.classList.contains("nature")) {
+      const petalIndex = 7 - (lives + 1);
+      dropPetal(petalIndex);
+    }
+
+    // 💀 LOSS CONDITION
+    if (lives === 0) {
+      gameOver = true;
+
+setTimeout(() => {
+  console.log("LOSS TRIGGERED");
+checkWinCondition()
+}, 1000);
+
+
+
+      return; 
+    }
   }
 
   updateMaskedWordDisplay();
-  checkWinCondition();
+
+  if (!gameOver) {
+    checkWinCondition();
+  }
 }
 
 function updateMaskedWordDisplay() {
@@ -384,6 +409,8 @@ function resetGameUI() {
   endGame.classList.add("hidden");
   gameBoard.classList.remove(...themes);
   checkStartButtonStatus();
+    const allPetals = gameBoard.querySelectorAll(".petal");
+    allPetals.forEach(p => p.remove());
 
   // Reset all letter buttons
   const letterButtons = lettersEl.querySelectorAll("button");
@@ -396,31 +423,103 @@ function resetGameUI() {
 function createPetals(){
   if (!gameBoard.classList.contains("nature")) return;
 
-  const flower = document.getElementById("theme-character");
+petals = [];
 
-  const oldPetals = flower.querySelectorAll(".petal");
-  oldPetals.forEach(p => p.remove());
+const flower = document.getElementById("theme-character");
 
-  const radius = 50; // distance petals from stem center
-  const centerX = flower.clientWidth / 2; 
-  const centerY = 50; // adjust how high above stem the petals sit
+const flowerRect = flower.getBoundingClientRect();
+const boardRect = gameBoard.getBoundingClientRect();
 
-  for (let i = 0; i < 7; i++) {
-    const petal = document.createElement("img");
-    petal.src = "imgs/nature/petal.png"
-    petal.classList.add("petal");
-    petal.dataset.index = i;
+// center relative to gameBoard
+const centerX = (flowerRect.left + flowerRect.width / 2) - boardRect.left -45;
+const centerY = (flowerRect.top + flowerRect.height / 30) - boardRect.top;
+ // adjust as needed to the top of the flower
 
-    const angle = (i / 7) * 180 - 90; // arc from left to right
-    const x = centerX + radius * Math.cos(angle * Math.PI / 180) - 20; // -20 to center petal
-    const y = centerY - radius * Math.sin(angle * Math.PI / 180);
+const radius = 80;
 
-    petal.style.left = `${x}px`;
-    petal.style.top  = `${y}px`;
 
-    flower.appendChild(petal);
-  }
+
+const oldPetals = gameBoard.querySelectorAll(".petal");
+oldPetals.forEach(p => p.remove());
+
+for (let i = 0; i < 7; i++) {
+  const petal = document.createElement("img");
+  petal.src = "imgs/nature/petal.png";
+  petal.classList.add("petal")
+  petal.dataset.index = i;
+
+  const angle = (i/7) * (Math.PI *2);
+  const angleDeg = angle * (180 / Math.PI);
+
+  const x = centerX + Math.cos(angle) * radius;
+  const y = centerY + Math.sin(angle) * radius;
+
+  petal.style.position = "absolute";
+  petal.style.zIndex = "2";
+  petal.style.left = `${x}px`;
+  petal.style.top = `${y}px`;
+
+  petal.style.transform = `rotate(${angleDeg + 90}deg)`;
+
+
+  
+  gameBoard.appendChild(petal);
+  petals.push(petal);
 }
+positionPetals();
+}
+
+function positionPetals() {
+    const flower = document.getElementById("theme-character");
+    const flowerRect = flower.getBoundingClientRect();
+    const boardRect = gameBoard.getBoundingClientRect();
+
+    // Center coordinates relative to gameBoard
+    const centerX = (flowerRect.left + flowerRect.width / 2) - boardRect.left;
+    const centerY = (flowerRect.top + flowerRect.height / 4) - boardRect.top; // adjust height to top of flower
+
+    const radius = 80; // distance from center
+
+    petals.forEach((petal, i) => {
+        const angle = (i / petals.length) * (Math.PI * 2);
+        const angleDeg = angle * (180 / Math.PI);
+
+        const x = centerX + Math.cos(angle) * radius - petal.width / 2; // center petal
+        const y = centerY + Math.sin(angle) * radius - petal.height / 2;
+
+        petal.style.left = `${x}px`;
+        petal.style.top = `${y}px`;
+        petal.style.transform = `rotate(${angleDeg + 90}deg)`;
+    });
+}
+
+function dropPetal(lifeIndex, onComplete) {
+    const petal = petals[lifeIndex];
+    if (!petal) {
+        if (onComplete) onComplete();
+        return;
+    }
+
+    // Set CSS variables for starting position
+    petal.style.setProperty('--start-top', `${petal.offsetTop}px`);
+    petal.style.setProperty('--start-left', `${petal.offsetLeft}px`);
+
+    // Trigger animation
+    petal.classList.add('falling');
+
+    // Listen for animation end
+    petal.addEventListener('animationend', () => {
+        petal.style.display = 'none';
+        if (onComplete) onComplete();
+    }, { once: true });
+}
+
+// Reposition petals if window is resized
+window.addEventListener("resize", () => {
+    if (petals && petals.length > 0) {
+        positionPetals();
+    }
+});
 
 // Event Listeners
 startBtn.addEventListener("click", startGame);
