@@ -339,7 +339,19 @@ checkWinCondition()
 }
 
 function updateMaskedWordDisplay() {
-  wordDisplayEl.textContent = maskedWord.join(" ");
+  if (gameBoard.classList.contains("invaders")) {
+    let html = "";
+    maskedWord.forEach(char => {
+      if (char === "_") {
+        html += `<img src="imgs/invaders/invader.png" class="invader">`;
+      } else {
+        html += `<span class="revealed-letter">${char}</span>`;
+      }
+    });
+    wordDisplayEl.innerHTML = html;
+  } else {
+    wordDisplayEl.textContent = maskedWord.join(" ");
+  }
 }
 
 function updateLivesDisplay() {

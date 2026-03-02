@@ -24,13 +24,14 @@ const themeList=["space", "western", "nature", "ocean", "zoo"]
 
 
 
+bugs: 
+
+drop down menu still halved.
+nature theme petals out of line 
+both these 2 above only on first load.
 
 
-western -  classic stickman hangman updated on life lost
-sound effects on letter choice 
-location of UI needs updating
 
 
 
-nature - petals on flower are lives/hangman, cutesy
-invaders - each letter is represented by an "invader". They become a letter when they get revealed. end of lives means you die. 
+invaders - each letter is represented by an "invader". They become a letter when they get revealed. end of lives means you die. uuuuuuuuuuuuu
