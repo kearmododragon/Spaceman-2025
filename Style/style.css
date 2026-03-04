@@ -402,6 +402,44 @@ h3 {
     color: rgba(224, 71, 158);
     font-size: 100px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+#game-board.invaders #letters {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+#game-board.invaders #bottom-ui {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#game-board.invaders #letters button {
+    appearance: none;
+    background: url("../imgs/invaders/button.png") center / cover no-repeat;
+    background-color: transparent;
+
+    width: 70px;
+    height: 70px;
+
+    border: none;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 #game-board.invaders #lives {
@@ -417,6 +455,10 @@ h3 {
 .invader {
   width: 150px;
   height: auto;
+}
+
+#game-board.invaders #masked-word {
+    transition:  transform 0.3s ease;
 }
 
 button {

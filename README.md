@@ -30,6 +30,8 @@ drop down menu still halved.
 nature theme petals out of line 
 both these 2 above only on first load.
 
+invaders move up instead of down
+
 
 
 

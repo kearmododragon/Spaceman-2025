@@ -165,6 +165,8 @@ let guessedLetters = [];
 
 let petals = [];
 
+let invaderStep = 0;
+
 // Derived Data
 const categories = [...new Set(wordList.map(word => word.category))];
 const difficulties = [...new Set(wordList.map(word => word.difficulty))];
@@ -210,6 +212,8 @@ function startGame() {
   lives = 7;
   guessedLetters = [];
   maskedWord = [];
+  invaderStep = 0;
+  wordDisplayEl.style.transform = "translateY(0px)"
 
   // Reset letter buttons
   const letterButtons = lettersEl.querySelectorAll("button");
@@ -309,6 +313,10 @@ console.log("Lives now:", lives);
     lives--;
     updateLivesDisplay();
     updateClue();
+    if (gameBoard.classList.contains("invaders")) {
+      invaderStep ++;
+      moveInvadersDown();
+    }
 
     // 🌸 Nature petal drop
     if (gameBoard.classList.contains("nature")) {
@@ -524,6 +532,28 @@ function dropPetal(lifeIndex, onComplete) {
         petal.style.display = 'none';
         if (onComplete) onComplete();
     }, { once: true });
+}
+
+function moveInvadersDown() {
+  requestAnimationFrame(() => {
+    const maxSteps = 7;
+    const dropDistance = calculateDropDistance();
+    const stepSize = dropDistance / maxSteps;
+    const newPosition = invaderStep * stepSize;
+
+    wordDisplayEl.style.transform = `translateY(${newPosition}px)`;
+  });
+}
+
+function calculateDropDistance() {
+  const invaderRect = wordDisplayEl.getBoundingClientRect();
+  const livesEl = document.getElementById("lives");
+  const livesRect = livesEl.getBoundingClientRect();
+
+  // Always measure distance
+  const distance = livesRect.top - invaderRect.bottom;
+
+  return distance;
 }
 
 // Reposition petals if window is resized
