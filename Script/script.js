@@ -151,7 +151,11 @@ const clueTextEl = document.getElementById("clue-text");
 const livesTextEl = document.getElementById("lives-remaining");
 const wordDisplayEl = document.getElementById("masked-word");
 const gunshotSound = new Audio("sounds/western/gun.mp3");
-
+const invaderMusic = new Audio("sounds/invaders/music.mp3")
+invaderMusic.loop = true;
+const shipShootSound = new Audio("sounds/invaders/shoot.wav")
+const deadInvaderSound = new Audio("sounds/invaders/invaderkilled.wav")
+const deadUser = new Audio("sounds/invaders/explosion.wav")
 // Game Config
 const clueRevealLives = 2;
 
@@ -263,6 +267,31 @@ function startGame() {
     themeCharacter.alt = "Flower stem";
     themeCharacter.classList.remove("hidden");
     createPetals();
+  } else if (selectedTheme === "invaders") {
+    const ship = document.getElementById("theme-character");
+    invaderMusic.play();
+    // Show the ship
+    ship.classList.remove("hidden");
+
+    // Set ship image
+    ship.src = "imgs/invaders/ship.png"; // your ship image
+    ship.alt = "Player ship";
+
+    // Set absolute positioning
+    ship.style.position = "absolute";
+    ship.style.left = "50%";
+    ship.style.transform = "translateX(-50%)";
+    ship.style.width = "100px"; // adjust size
+    ship.style.height = "auto"; // keep aspect ratio
+    ship.onload = () => {
+      const clueEl = document.getElementById("clue");
+      const clueRect = clueEl.getBoundingClientRect();
+      const boardRect = gameBoard.getBoundingClientRect();
+
+      // Position ship just above the clue
+      ship.style.top = `${clueRect.top - boardRect.top - ship.height - 10}px`;
+    };
+    if (ship.complete) ship.onload();
   } else {
     themeCharacter.classList.add("hidden");
   }
@@ -286,7 +315,6 @@ function startGame() {
   updateClue();
   updateLivesDisplay();
 }
-
 function updateClue() {
   const livesUntilReveal = lives - clueRevealLives;
   if (lives > clueRevealLives) {
@@ -295,10 +323,10 @@ function updateClue() {
     clueTextEl.textContent = currentWordObj.clue;
   }
 }
-
 function letterCheck(letter) {
   if (gameOver) return;
-console.log("Lives now:", lives);
+  console.log("Lives now:", lives);
+
   let foundMatch = false;
 
   // Reveal matching letters
@@ -306,46 +334,84 @@ console.log("Lives now:", lives);
     if (currentWord[i] === letter) {
       maskedWord[i] = letter;
       foundMatch = true;
+
+      // Invader theme: show explosion
+      if (gameBoard.classList.contains("invaders")) {
+        const invader = wordDisplayEl.children[i];
+
+        // Replace invader with explosion image
+        invader.src = "imgs/invaders/bang.png";
+
+        // Play invader killed sound
+        deadInvaderSound.currentTime = 0;
+        deadInvaderSound.play();
+
+        // After short delay, update board to reveal letter
+        setTimeout(() => {
+          updateMaskedWordDisplay();
+        }, 300);
+      }
     }
   }
 
   if (!foundMatch) {
+    // Wrong guess
     lives--;
     updateLivesDisplay();
     updateClue();
+
+    // Invader drop
     if (gameBoard.classList.contains("invaders")) {
-      invaderStep ++;
       moveInvadersDown();
     }
 
-    // 🌸 Nature petal drop
+    // Nature petal drop
     if (gameBoard.classList.contains("nature")) {
       const petalIndex = 7 - (lives + 1);
       dropPetal(petalIndex);
     }
 
-    // 💀 LOSS CONDITION
+    // LOSS CONDITION
     if (lives === 0) {
       gameOver = true;
+      invaderMusic.pause();
+      invaderMusic.currentTime = 0;
 
-setTimeout(() => {
-  console.log("LOSS TRIGGERED");
-checkWinCondition()
-}, 1000);
+      const letterButtons = lettersEl.querySelectorAll("button");
+      letterButtons.forEach(btn => btn.disabled = true);
 
+      // Play user dead sound
+      deadUser.currentTime = 0;
+      deadUser.play();
 
+      // exploded ship
+      if (gameBoard.classList.contains("invaders")) {
+        const ship = document.getElementById("theme-character");
+        ship.src = "imgs/invaders/bang.png"
+      }
+      // Trigger end game after 1 second
+      setTimeout(() => {
+        checkWinCondition();
+      }, 1000);
 
-      return; 
+      return;
     }
+  } else if (!gameBoard.classList.contains("invaders")) {
+    // For non-invader themes, play dead sound after revealing letters
+    deadInvaderSound.currentTime = 0;
+    deadInvaderSound.play();
   }
 
-  updateMaskedWordDisplay();
+  // Only update masked word immediately if NOT invader theme,
+  // otherwise explosion timeout handles it
+  if (!gameBoard.classList.contains("invaders")) {
+    updateMaskedWordDisplay();
+  }
 
   if (!gameOver) {
     checkWinCondition();
   }
 }
-
 function updateMaskedWordDisplay() {
   if (gameBoard.classList.contains("invaders")) {
     let html = "";
@@ -361,17 +427,18 @@ function updateMaskedWordDisplay() {
     wordDisplayEl.textContent = maskedWord.join(" ");
   }
 }
-
 function updateLivesDisplay() {
   livesTextEl.textContent = `${lives}`;
 }
-
 function checkWinCondition() {
   const wordGuessed = !maskedWord.includes("_");
 
   if (lives <= 0 || wordGuessed) {
     gameOver = true;
-
+  if (gameBoard.classList.contains("invaders")) {
+    invaderMusic.pause();
+    invaderMusic.currentTime = 0;
+  }
     endGameMessageEl.textContent = wordGuessed ? "Well done, my guy!" : "Game Over!";
     wordRevealEl.textContent = `The word was: ${currentWord}`;
 
@@ -422,15 +489,15 @@ function checkWinCondition() {
     }
   }
 }
-
 function resetGameUI() {
   startScreen.classList.remove("hidden");
   gameBoard.classList.add("hidden");
   endGame.classList.add("hidden");
   gameBoard.classList.remove(...themes);
   checkStartButtonStatus();
-    const allPetals = gameBoard.querySelectorAll(".petal");
-    allPetals.forEach(p => p.remove());
+  const allPetals = gameBoard.querySelectorAll(".petal");
+  allPetals.forEach(p => p.remove());
+  
 
   // Reset all letter buttons
   const letterButtons = lettersEl.querySelectorAll("button");
@@ -439,112 +506,115 @@ function resetGameUI() {
     btn.classList.remove("disabled");
   });
 }
-
-function createPetals(){
+function createPetals() {
   if (!gameBoard.classList.contains("nature")) return;
 
-petals = [];
+  petals = [];
 
-const flower = document.getElementById("theme-character");
+  const flower = document.getElementById("theme-character");
 
-const flowerRect = flower.getBoundingClientRect();
-const boardRect = gameBoard.getBoundingClientRect();
+  const flowerRect = flower.getBoundingClientRect();
+  const boardRect = gameBoard.getBoundingClientRect();
 
-// center relative to gameBoard
-const centerX = (flowerRect.left + flowerRect.width / 2) - boardRect.left -45;
-const centerY = (flowerRect.top + flowerRect.height / 30) - boardRect.top;
- // adjust as needed to the top of the flower
+  // center relative to gameBoard
+  const centerX = (flowerRect.left + flowerRect.width / 2) - boardRect.left - 45;
+  const centerY = (flowerRect.top + flowerRect.height / 30) - boardRect.top;
+  // adjust as needed to the top of the flower
 
-const radius = 80;
-
-
-
-const oldPetals = gameBoard.querySelectorAll(".petal");
-oldPetals.forEach(p => p.remove());
-
-for (let i = 0; i < 7; i++) {
-  const petal = document.createElement("img");
-  petal.src = "imgs/nature/petal.png";
-  petal.classList.add("petal")
-  petal.dataset.index = i;
-
-  const angle = (i/7) * (Math.PI *2);
-  const angleDeg = angle * (180 / Math.PI);
-
-  const x = centerX + Math.cos(angle) * radius;
-  const y = centerY + Math.sin(angle) * radius;
-
-  petal.style.position = "absolute";
-  petal.style.zIndex = "2";
-  petal.style.left = `${x}px`;
-  petal.style.top = `${y}px`;
-
-  petal.style.transform = `rotate(${angleDeg + 90}deg)`;
+  const radius = 80;
 
 
-  
-  gameBoard.appendChild(petal);
-  petals.push(petal);
+
+  const oldPetals = gameBoard.querySelectorAll(".petal");
+  oldPetals.forEach(p => p.remove());
+
+  for (let i = 0; i < 7; i++) {
+    const petal = document.createElement("img");
+    petal.src = "imgs/nature/petal.png";
+    petal.classList.add("petal")
+    petal.dataset.index = i;
+
+    const angle = (i / 7) * (Math.PI * 2);
+    const angleDeg = angle * (180 / Math.PI);
+
+    const x = centerX + Math.cos(angle) * radius;
+    const y = centerY + Math.sin(angle) * radius;
+
+    petal.style.position = "absolute";
+    petal.style.zIndex = "2";
+    petal.style.left = `${x}px`;
+    petal.style.top = `${y}px`;
+
+    petal.style.transform = `rotate(${angleDeg + 90}deg)`;
+
+
+
+    gameBoard.appendChild(petal);
+    petals.push(petal);
+  }
+  positionPetals();
 }
-positionPetals();
-}
-
 function positionPetals() {
-    const flower = document.getElementById("theme-character");
-    const flowerRect = flower.getBoundingClientRect();
-    const boardRect = gameBoard.getBoundingClientRect();
+  const flower = document.getElementById("theme-character");
+  const flowerRect = flower.getBoundingClientRect();
+  const boardRect = gameBoard.getBoundingClientRect();
 
-    // Center coordinates relative to gameBoard
-    const centerX = (flowerRect.left + flowerRect.width / 2) - boardRect.left;
-    const centerY = (flowerRect.top + flowerRect.height / 4) - boardRect.top; // adjust height to top of flower
+  // Center coordinates relative to gameBoard
+  const centerX = (flowerRect.left + flowerRect.width / 2) - boardRect.left;
+  const centerY = (flowerRect.top + flowerRect.height / 4) - boardRect.top; // adjust height to top of flower
 
-    const radius = 80; // distance from center
+  const radius = 80; // distance from center
 
-    petals.forEach((petal, i) => {
-        const angle = (i / petals.length) * (Math.PI * 2);
-        const angleDeg = angle * (180 / Math.PI);
+  petals.forEach((petal, i) => {
+    const angle = (i / petals.length) * (Math.PI * 2);
+    const angleDeg = angle * (180 / Math.PI);
 
-        const x = centerX + Math.cos(angle) * radius - petal.width / 2; // center petal
-        const y = centerY + Math.sin(angle) * radius - petal.height / 2;
+    const x = centerX + Math.cos(angle) * radius - petal.width / 2; // center petal
+    const y = centerY + Math.sin(angle) * radius - petal.height / 2;
 
-        petal.style.left = `${x}px`;
-        petal.style.top = `${y}px`;
-        petal.style.transform = `rotate(${angleDeg + 90}deg)`;
-    });
-}
-
-function dropPetal(lifeIndex, onComplete) {
-    const petal = petals[lifeIndex];
-    if (!petal) {
-        if (onComplete) onComplete();
-        return;
-    }
-
-    // Set CSS variables for starting position
-    petal.style.setProperty('--start-top', `${petal.offsetTop}px`);
-    petal.style.setProperty('--start-left', `${petal.offsetLeft}px`);
-
-    // Trigger animation
-    petal.classList.add('falling');
-
-    // Listen for animation end
-    petal.addEventListener('animationend', () => {
-        petal.style.display = 'none';
-        if (onComplete) onComplete();
-    }, { once: true });
-}
-
-function moveInvadersDown() {
-  requestAnimationFrame(() => {
-    const maxSteps = 7;
-    const dropDistance = calculateDropDistance();
-    const stepSize = dropDistance / maxSteps;
-    const newPosition = invaderStep * stepSize;
-
-    wordDisplayEl.style.transform = `translateY(${newPosition}px)`;
+    petal.style.left = `${x}px`;
+    petal.style.top = `${y}px`;
+    petal.style.transform = `rotate(${angleDeg + 90}deg)`;
   });
 }
+function dropPetal(lifeIndex, onComplete) {
+  const petal = petals[lifeIndex];
+  if (!petal) {
+    if (onComplete) onComplete();
+    return;
+  }
 
+  // Set CSS variables for starting position
+  petal.style.setProperty('--start-top', `${petal.offsetTop}px`);
+  petal.style.setProperty('--start-left', `${petal.offsetLeft}px`);
+
+  // Trigger animation
+  petal.classList.add('falling');
+
+  // Listen for animation end
+  petal.addEventListener('animationend', () => {
+    petal.style.display = 'none';
+    if (onComplete) onComplete();
+  }, { once: true });
+}
+function moveInvadersDown() {
+  const maxSteps = lives; // number of lives left at start, 7
+  const ship = document.getElementById("theme-character");
+
+  const invaderRect = wordDisplayEl.getBoundingClientRect();
+  const shipRect = ship.getBoundingClientRect();
+
+  // Distance from invader bottom to ship top
+  const distanceToShip = shipRect.top - invaderRect.bottom +30;
+
+  // Divide the total distance by maxSteps for each wrong guess
+  const stepSize = distanceToShip / maxSteps;
+
+  invaderStep++;
+
+  const newPosition = invaderStep * stepSize;
+  wordDisplayEl.style.transform = `translateY(${newPosition}px)`;
+}
 function calculateDropDistance() {
   const invaderRect = wordDisplayEl.getBoundingClientRect();
   const livesEl = document.getElementById("lives");
@@ -558,9 +628,9 @@ function calculateDropDistance() {
 
 // Reposition petals if window is resized
 window.addEventListener("resize", () => {
-    if (petals && petals.length > 0) {
-        positionPetals();
-    }
+  if (petals && petals.length > 0) {
+    positionPetals();
+  }
 });
 
 // Event Listeners
@@ -574,11 +644,15 @@ lettersEl.addEventListener("click", e => {
   // Always disable the button
   e.target.disabled = true;
 
-  // Show bullet overlay if Western theme
   if (gameBoard.classList.contains("western")) {
     gunshotSound.currentTime = 0;
     gunshotSound.play();
     e.target.classList.add("disabled");
+  } else if (gameBoard.classList.contains("invaders")){
+    shipShootSound.currentTime = 0;
+    shipShootSound.play();
+      e.target.disabled = true;
+  e.target.classList.add("hidden");
   }
 
   letterCheck(letter);

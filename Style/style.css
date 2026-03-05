@@ -18,6 +18,7 @@ body {
     padding: 0;
     height: 100%;
 }
+
 #dropdown-container select option {
     text-transform: capitalize;
 }

@@ -4,23 +4,23 @@
     - Will require keyboard event listeners
     - A good icebox feature (optional feature) is to allow the player to choose from categories of words.
 
-Have selection of words in the backend
-Select a letter (click on screen or type)
-Letter cannot be used twice, if letter isn't in the word then lose a life, if it is fill in for each time.
-Game over when out of life 
-game won when word guessed.
+Players select:
+• Category
+• Difficulty
+• Theme
 
-Ice box
-- visuals of the hangman/spaceman
-- words of warning when almost out
-- letters crossed out when guessed 
-- categories of words, i.e sport, history, colours, food. 
-- different background based on category 
-- 2 player (pick your own word) 
-- timer
-- music
+Each theme has unique visual feedback:
+• Space – astronaut animation
+• Western – cowboy duel
+• Nature – flower petals fall
+• Invaders – Space Invaders style enemies descend
 
-const themeList=["space", "western", "nature", "ocean", "zoo"]
+Features:
+• 100+ word database
+• Dynamic clue reveal
+• Audio effects and music
+• Animated win/lose states
+• Theme-based gameplay visuals
 
 
 
@@ -29,11 +29,3 @@ bugs:
 drop down menu still halved.
 nature theme petals out of line 
 both these 2 above only on first load.
-
-invaders move up instead of down
-
-
-
-
-
-invaders - each letter is represented by an "invader". They become a letter when they get revealed. end of lives means you die. uuuuuuuuuuuuu
